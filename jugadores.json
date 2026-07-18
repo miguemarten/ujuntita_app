@@ -25,19 +25,19 @@
       "timestamp_actualizacion": 1784342275.4607918
     }
   ],
-  "active_screen": "game_ruleta",
+  "active_screen": "scoreboard",
   "score_goal": 100,
   "memorice": {
     "words": [
-      "ATARI",
-      "NES",
-      "GENESIS",
-      "GAMEBOY",
-      "SUPER NES",
-      "N64",
-      "PLAYSTATION",
-      "DREAMCAST",
-      "WII"
+      "PACMAN",
+      "TETRIS",
+      "PONG",
+      "DOOM",
+      "ZELDA",
+      "METROID",
+      "GALAGA",
+      "FROGGER",
+      "ASTEROIDS"
     ],
     "order": [
       5,
@@ -50,21 +50,18 @@
       4,
       7
     ],
-    "current_order_index": 2,
-    "revealed_indices": [
-      5,
-      2
-    ],
+    "current_order_index": 0,
+    "revealed_indices": [],
     "error_index": -1,
     "players_ids": [
       1,
       2,
       3
     ],
-    "active_player_index": 2,
+    "active_player_index": 0,
     "timer_active": false,
     "timer_start_time": 1784340436.0777028,
-    "status": "idle"
+    "status": "memorizing"
   },
   "music": {
     "clues": [
@@ -85,8 +82,8 @@
     "player_b_id": 2,
     "active_player_id": 2,
     "timer_active": false,
-    "timer_start_time": 1784340629.1077964,
-    "status": "idle",
+    "timer_start_time": 1784411625.0315413,
+    "status": "timeout",
     "points_awarded": 0
   },
   "ruleta": {

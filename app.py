@@ -24,10 +24,30 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # ──────────────────────────────────────────────
-# ⚙️ PRESETS DE CONCEPTOS Y PREGUNTAS
+# ⚙️ PRESETS DE CONCEPTOS Y PREGUNTAS (CARGA DESDE JSON)
 # ──────────────────────────────────────────────
 
-PRESET_CONCEPTOS = [
+PRESETS_DIR = os.path.join(BASE_DIR, "presets")
+os.makedirs(PRESETS_DIR, exist_ok=True)
+
+def cargar_preset_archivo(nombre_archivo, por_defecto):
+    """Carga un archivo preset en formato JSON o escribe el valor por defecto si no existe."""
+    ruta = os.path.join(PRESETS_DIR, nombre_archivo)
+    if os.path.exists(ruta):
+        try:
+            with open(ruta, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error cargando preset {nombre_archivo}: {e}")
+    try:
+        with open(ruta, "w", encoding="utf-8") as f:
+            json.dump(por_defecto, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error guardando preset por defecto {nombre_archivo}: {e}")
+    return por_defecto
+
+# Presets por defecto (fallbacks)
+DEFAULT_CONCEPTOS = [
     {"concepto": "GRACIA", "definicion": "Regalo inmerecido de Dios para la salvación del hombre."},
     {"concepto": "FE", "definicion": "La certeza de lo que se espera, la convicción de lo que no se ve."},
     {"concepto": "REDENCION", "definicion": "Rescatar o librar a alguien pagando un precio o rescate."},
@@ -40,7 +60,7 @@ PRESET_CONCEPTOS = [
     {"concepto": "SALVACION", "definicion": "Liberación de la condenación eterna del pecado por medio de Jesús."}
 ]
 
-PRESET_PREGUNTAS = {
+DEFAULT_PREGUNTAS = {
     "verde": [
         "¿Cuál es tu emoji favorito y en qué momento lo usas más?",
         "Si tuvieras que comer una sola comida por el resto de tu vida, ¿cuál sería?",
@@ -64,7 +84,7 @@ PRESET_PREGUNTAS = {
     ]
 }
 
-PRESET_PROBABLE = [
+DEFAULT_PROBABLE = [
     "¿Quién es más probable que se quede dormido orando?",
     "¿Quién es más probable que sobreviva a un apocalipsis zombie?",
     "¿Quién es más probable que se pierda yendo al baño de la iglesia?",
@@ -74,6 +94,14 @@ PRESET_PROBABLE = [
     "¿Quién es más probable que empiece a reírse a carcajadas en un momento serio?",
     "¿Quién es más probable que olvide dónde deja su teléfono móvil constantemente?"
 ]
+
+DEFAULT_MEMORICE = {
+    "consolas": ["ATARI", "NES", "GENESIS", "GAMEBOY", "SUPER NES", "N64", "PLAYSTATION", "DREAMCAST", "WII"],
+    "juegos": ["PACMAN", "TETRIS", "PONG", "DOOM", "ZELDA", "METROID", "GALAGA", "FROGGER", "ASTEROIDS"],
+    "comida": ["PIZZA", "BURGER", "HELADO", "DONA", "NUGGETS", "SUSHI", "TACOS", "PALOMITAS", "HOTDOG"],
+    "colores": ["ROJO", "AZUL", "VERDE", "CYAN", "MAGENTA", "AMARILLO", "BLANCO", "NEGRO", "NARANJA"]
+}
+
 
 # ──────────────────────────────────────────────
 # ⚙️ ESTADO GLOBAL Y PERSISTENCIA
@@ -195,14 +223,15 @@ def cargar_datos():
                     m["timer_active"] = False
                 datos["memorice"] = m
 
-                if "music" not in datos:
-                    datos["music"] = estado_juego["music"]
-                if "ahoracaigo" not in datos:
-                    datos["ahoracaigo"] = estado_juego["ahoracaigo"]
-                if "ruleta" not in datos:
-                    datos["ruleta"] = estado_juego["ruleta"]
-                if "probable" not in datos:
-                    datos["probable"] = estado_juego["probable"]
+                # Normalizar otros campos recursivamente/profundamente para evitar inconsistencias
+                for module in ["music", "ahoracaigo", "ruleta", "probable"]:
+                    if module not in datos:
+                        datos[module] = estado_juego[module]
+                    else:
+                        for k, v in estado_juego[module].items():
+                            if k not in datos[module]:
+                                datos[module][k] = v
+                
                 estado_juego = datos
             except Exception as e:
                 print(f"Error cargando JSON, usando por defecto: {e}")
@@ -418,6 +447,11 @@ def limpiar_juego():
 
 # --- MEMORICE DE PALABRAS (REDISEÑO 3x3) ---
 
+@app.route("/api/juego/memorice/presets", methods=["GET"])
+def memorice_get_presets():
+    """Retorna las categorías y palabras predefinidas de Memorice."""
+    return jsonify(cargar_preset_archivo("memorice.json", DEFAULT_MEMORICE))
+
 @app.route("/api/juego/memorice/config", methods=["POST"])
 def memorice_config():
     body = request.get_json(force=True)
@@ -489,6 +523,9 @@ def memorice_intentar():
         idx = int(idx)
     except (ValueError, TypeError):
         return jsonify({"error": "El índice debe ser un entero de 0 a 8"}), 400
+        
+    if idx < 0 or idx > 8:
+        return jsonify({"error": "El índice debe estar en el rango de 0 a 8"}), 400
         
     with data_lock:
         m = estado_juego["memorice"]
@@ -653,7 +690,7 @@ def music_adivinada():
 @app.route("/api/juego/ahoracaigo/preset", methods=["GET"])
 def ahoracaigo_get_presets():
     """Retorna los conceptos predefinidos."""
-    return jsonify(PRESET_CONCEPTOS)
+    return jsonify(cargar_preset_archivo("conceptos.json", DEFAULT_CONCEPTOS))
 
 @app.route("/api/juego/ahoracaigo/config", methods=["POST"])
 def ahoracaigo_config():
@@ -664,7 +701,8 @@ def ahoracaigo_config():
     
     # Si viene vacío, sacar uno al azar del preset
     if not concept:
-        item = random.choice(PRESET_CONCEPTOS)
+        conceptos = cargar_preset_archivo("conceptos.json", DEFAULT_CONCEPTOS)
+        item = random.choice(conceptos)
         concept = item["concepto"]
         definition = item["definicion"]
         
@@ -820,7 +858,8 @@ def ruleta_pregunta():
     if level not in ["verde", "amarillo", "rojo"]:
         level = "verde"
         
-    questions = PRESET_PREGUNTAS[level]
+    preguntas = cargar_preset_archivo("preguntas_ruleta.json", DEFAULT_PREGUNTAS)
+    questions = preguntas.get(level, preguntas.get("verde", []))
     question = random.choice(questions)
     
     # Puntos: Verde = 10, Amarillo = 20, Rojo = 30
@@ -874,7 +913,7 @@ def ruleta_premiar():
 @app.route("/api/juego/probable/preset", methods=["GET"])
 def probable_get_presets():
     """Retorna las premisas predefinidas."""
-    return jsonify(PRESET_PROBABLE)
+    return jsonify(cargar_preset_archivo("probable.json", DEFAULT_PROBABLE))
 
 @app.route("/api/juego/probable/config", methods=["POST"])
 def probable_config():
@@ -883,7 +922,8 @@ def probable_config():
     question = body.get("question", "").strip()
     
     if not question:
-        question = random.choice(PRESET_PROBABLE)
+        probables = cargar_preset_archivo("probable.json", DEFAULT_PROBABLE)
+        question = random.choice(probables)
         
     with data_lock:
         pr = estado_juego["probable"]
@@ -935,15 +975,24 @@ def sse_stream():
     """
     Canal SSE permanente para el proyector.
     Envía actualizaciones completas del estado cuando se notifica un cambio.
+    Evita la fuga de hilos mediante el envío de un ping de latido periódico.
     """
     def event_generator():
         last_seen_version = -1
+        last_heartbeat = time.time()
         while True:
+            now = time.time()
             if data_version != last_seen_version:
                 last_seen_version = data_version
                 with data_lock:
                     payload = json.dumps(estado_juego, ensure_ascii=False)
                 yield f"data: {payload}\n\n"
+                last_heartbeat = now
+            elif now - last_heartbeat > 5.0:
+                # Envía un latido (ping) para mantener la conexión activa
+                # y permitir que el servidor detecte disonexiones del cliente.
+                yield ": ping\n\n"
+                last_heartbeat = now
             time.sleep(0.2)
 
     return Response(

@@ -1,0 +1,6 @@
+{
+  "consolas": ["ATARI", "NES", "GENESIS", "GAMEBOY", "SUPER NES", "N64", "PLAYSTATION", "DREAMCAST", "WII"],
+  "juegos": ["PACMAN", "TETRIS", "PONG", "DOOM", "ZELDA", "METROID", "GALAGA", "FROGGER", "ASTEROIDS"],
+  "comida": ["PIZZA", "BURGER", "HELADO", "DONA", "NUGGETS", "SUSHI", "TACOS", "PALOMITAS", "HOTDOG"],
+  "colores": ["ROJO", "AZUL", "VERDE", "CYAN", "MAGENTA", "AMARILLO", "BLANCO", "NEGRO", "NARANJA"]
+}

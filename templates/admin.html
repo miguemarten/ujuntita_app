@@ -352,6 +352,12 @@
                             
                             <button onclick="premiarMusicaAdivinada()" class="pixel-btn pixel-btn-success" style="width: 100%;">
                                 ⭐ ¡CANCION ADIVINADA!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- CONTENIDO DE PESTAÑA: AHORA CAIGO -->
         <div id="tab-ahoracaigo" class="admin-tab-content">
             <div class="pixel-panel accent-magenta">
@@ -441,11 +447,10 @@
                             <button id="ac-correct-btn" onclick="registrarCorrecto()" class="pixel-btn pixel-btn-success" style="width: 100%; font-size: 0.85rem; padding: 15px 5px; display: none;">
                                 👍 ¡RESPUESTA CORRECTA! (Siguiente Turno)
                             </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>� FALLÓ / TIEMPO
+                            
+                            <!-- Botón Falló / Tiempo -->
+                            <button id="ac-fail-btn" onclick="registrarFallo()" class="pixel-btn pixel-btn-danger" style="width: 100%; font-size: 0.85rem; padding: 15px 5px; display: none;">
+                                ❌ FALLÓ / TIEMPO
                             </button>
                         </div>
                     </div>
@@ -612,12 +617,7 @@
     <!-- SCRIPTS DE INTERACCIÓN -->
     <script>
         let selectedEmojiChar = '👾';
-        let presetsMemorice = {
-            consolas: ["ATARI", "NES", "GENESIS", "GAMEBOY", "SUPER NES", "N64", "PLAYSTATION", "DREAMCAST", "WII"],
-            juegos: ["PACMAN", "TETRIS", "PONG", "DOOM", "ZELDA", "METROID", "GALAGA", "FROGGER", "ASTEROIDS"],
-            comida: ["PIZZA", "BURGER", "HELADO", "DONA", "NUGGETS", "SUSHI", "TACOS", "PALOMITAS", "HOTDOG"],
-            colores: ["ROJO", "AZUL", "VERDE", "CYAN", "MAGENTA", "AMARILLO", "BLANCO", "NEGRO", "NARANJA"]
-        };
+        let presetsMemorice = {};
         let presetConceptosAC = [];
         let probablePresets = [];
 
@@ -625,10 +625,12 @@
         let acTimer = null;
         let acTimeLeft = 30;
         let acIsTimerActive = false;
+        let acLastStartTime = 0;
 
         let memTimer = null;
         let memTimeLeft = 70;
         let memIsTimerActive = false;
+        let memLastStartTime = 0;
 
         function loadPresetCategory(val) {
             if (!val) return;
@@ -840,22 +842,27 @@
                 // Sincronizar botones de flujo según el estado
                 const startBtn = document.getElementById('ac-start-versus-btn');
                 const correctBtn = document.getElementById('ac-correct-btn');
+                const failBtn = document.getElementById('ac-fail-btn');
                 
                 if (state.ahoracaigo.status === "idle") {
                     if (startBtn) startBtn.style.display = "block";
                     if (correctBtn) correctBtn.style.display = "none";
+                    if (failBtn) failBtn.style.display = "none";
                 } else if (state.ahoracaigo.status === "playing") {
                     if (startBtn) startBtn.style.display = "none";
                     if (correctBtn) correctBtn.style.display = "block";
+                    if (failBtn) failBtn.style.display = "block";
                 } else {
                     if (startBtn) startBtn.style.display = "none";
                     if (correctBtn) correctBtn.style.display = "none";
+                    if (failBtn) failBtn.style.display = "none";
                 }
 
                 // Sincronizar reloj por SSE
                 if (state.ahoracaigo.timer_active) {
-                    if (!acIsTimerActive) {
+                    if (!acIsTimerActive || acLastStartTime !== state.ahoracaigo.timer_start_time) {
                         acIsTimerActive = true;
+                        acLastStartTime = state.ahoracaigo.timer_start_time;
                         startLocalTimer(state.ahoracaigo.timer_start_time);
                     }
                 } else {
@@ -948,8 +955,9 @@
 
                 // Sincronizar reloj de 70s
                 if (state.memorice.timer_active) {
-                    if (!memIsTimerActive) {
+                    if (!memIsTimerActive || memLastStartTime !== state.memorice.timer_start_time) {
                         memIsTimerActive = true;
+                        memLastStartTime = state.memorice.timer_start_time;
                         startMemTimer(state.memorice.timer_start_time);
                     }
                 } else {
@@ -1536,6 +1544,29 @@
         }
 
 
+        // Cargar presets de Memorice al iniciar
+        async function cargarMemoricePresetsList() {
+            try {
+                const res = await fetch('/api/juego/memorice/presets');
+                presetsMemorice = await res.json();
+                
+                const selectEl = document.getElementById('memorice-category-select');
+                if (selectEl) {
+                    selectEl.innerHTML = '<option value="">[ SELECCIONAR CATEGORIA (9 PALABRAS) ]</option>' + 
+                        Object.keys(presetsMemorice).map(cat => {
+                            let displayName = cat.toUpperCase();
+                            if (cat === "consolas") displayName = "👾 CONSOLAS RETRO";
+                            else if (cat === "juegos") displayName = "🕹️ CLÁSICOS ARCADE";
+                            else if (cat === "comida") displayName = "🍕 COMIDA ARCADE";
+                            else if (cat === "colores") displayName = "🌈 COLORES NEÓN";
+                            return `<option value="${cat}">${displayName}</option>`;
+                        }).join('');
+                }
+            } catch (err) {
+                console.error("Error al cargar presets de memorice:", err);
+            }
+        }
+
         // Conectar SSE Stream para sincronizar
         function iniciarSSE() {
             const evtSource = new EventSource("/api/stream");
@@ -1553,6 +1584,7 @@
         // Iniciar
         // cargarACPresetsList();
         cargarProbablePresetsList();
+        cargarMemoricePresetsList();
         fetchEstado();
         iniciarSSE();
     </script>

@@ -46,19 +46,53 @@ def cargar_preset_archivo(nombre_archivo, por_defecto):
         print(f"Error guardando preset por defecto {nombre_archivo}: {e}")
     return por_defecto
 
-# Presets por defecto (fallbacks)
-DEFAULT_CONCEPTOS = [
-    {"concepto": "GRACIA", "definicion": "Regalo inmerecido de Dios para la salvación del hombre."},
-    {"concepto": "FE", "definicion": "La certeza de lo que se espera, la convicción de lo que no se ve."},
-    {"concepto": "REDENCION", "definicion": "Rescatar o librar a alguien pagando un precio o rescate."},
-    {"concepto": "DISCIPULO", "definicion": "Aquel que sigue de cerca y aprende las enseñanzas de su maestro."},
-    {"concepto": "APOSTOL", "definicion": "Mensajero enviado con una misión o autoridad especial."},
-    {"concepto": "PENTATEUCO", "definicion": "Nombre que reciben los primeros cinco libros de la Biblia."},
-    {"concepto": "APOCALIPSIS", "definicion": "Último libro del Nuevo Testamento que habla de revelaciones finales."},
-    {"concepto": "SANTIDAD", "definicion": "Estado de estar apartado del pecado y consagrado para el servicio de Dios."},
-    {"concepto": "PROJIMO", "definicion": "Cualquier ser humano que nos rodea, a quien se nos manda amar."},
-    {"concepto": "SALVACION", "definicion": "Liberación de la condenación eterna del pecado por medio de Jesús."}
-]
+# Presets de Ahora Caigo y helpers
+def obtener_preguntas_ahoracaigo():
+    ruta = os.path.join(PRESETS_DIR, "ahoracaigo_preguntas.json")
+    if os.path.exists(ruta):
+        try:
+            with open(ruta, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error cargando preguntas de Ahora Caigo: {e}")
+    # Fallback básico
+    return {
+        "facil": [{"concepto": "JESUS", "definicion": "El Hijo de Dios y Salvador del mundo."}],
+        "media-baja": [{"concepto": "ABRAHAM", "definicion": "Padre de la fe."}],
+        "media-alta": [{"concepto": "REDENCION", "definicion": "Librar pagando un precio."}],
+        "alta": [{"concepto": "MELQUISEDEC", "definicion": "Rey de Salem y sacerdote."}]
+    }
+
+def obtener_siguiente_pregunta_ahoracaigo(correct_count, used_concepts):
+    """Selecciona una pregunta de Ahora Caigo basándose en el contador de respuestas correctas."""
+    preguntas = obtener_preguntas_ahoracaigo()
+    
+    if correct_count < 5:
+        diff_key = "facil"
+    elif 5 <= correct_count < 10:
+        diff_key = "media-baja"
+    elif 10 <= correct_count < 15:
+        diff_key = "media-alta"
+    else:
+        diff_key = "alta"
+        
+    lista_preguntas = preguntas.get(diff_key, [])
+    if not lista_preguntas:
+        diff_key = "facil"
+        lista_preguntas = preguntas.get(diff_key, [])
+        
+    disponibles = [p for p in lista_preguntas if p["concepto"].upper() not in [c.upper() for c in used_concepts]]
+    
+    if not disponibles:
+        # Si se agotaron, vaciar la lista de usadas temporalmente en el retorno
+        disponibles = lista_preguntas
+        
+    if disponibles:
+        seleccionada = random.choice(disponibles)
+        return seleccionada["concepto"].upper(), seleccionada["definicion"], diff_key
+        
+    return "JESUS", "El Hijo de Dios y Salvador del mundo.", "facil"
+
 
 DEFAULT_PREGUNTAS = {
     "verde": [
@@ -88,11 +122,7 @@ DEFAULT_PROBABLE = [
     "¿Quién es más probable que se quede dormido orando?",
     "¿Quién es más probable que sobreviva a un apocalipsis zombie?",
     "¿Quién es más probable que se pierda yendo al baño de la iglesia?",
-    "¿Quién es más probable que se convierta en pastor o misionero en una isla lejana?",
-    "¿Quién es más probable que gaste todos sus ahorros en comida o dulces?",
-    "¿Quién es más probable que rompa el control jugando un videojuego?",
-    "¿Quién es más probable que empiece a reírse a carcajadas en un momento serio?",
-    "¿Quién es más probable que olvide dónde deja su teléfono móvil constantemente?"
+    "¿Quién es más probable que intente pagar con tarjeta de crédito la ofrenda?"
 ]
 
 DEFAULT_MEMORICE = {
@@ -145,9 +175,9 @@ estado_juego = {
 
     # Módulo Ahora Caigo (Conceptos y Definiciones en Versus 1v1)
     "ahoracaigo": {
-        "concept": "GRACIA",
-        "definition": "Regalo inmerecido de Dios para la salvación.",
-        "displayed_word": "G _ _ C _ _",
+        "concept": "",
+        "definition": "",
+        "displayed_word": "",
         "player_a_id": None,
         "player_b_id": None,
         "active_player_id": None,  # Jugador cuyo cronómetro está activo
@@ -689,38 +719,35 @@ def music_adivinada():
 
 @app.route("/api/juego/ahoracaigo/preset", methods=["GET"])
 def ahoracaigo_get_presets():
-    """Retorna los conceptos predefinidos."""
-    return jsonify(cargar_preset_archivo("conceptos.json", DEFAULT_CONCEPTOS))
+    """Retorna los conceptos predefinidos de Ahora Caigo."""
+    return jsonify(obtener_preguntas_ahoracaigo())
 
 @app.route("/api/juego/ahoracaigo/config", methods=["POST"])
 def ahoracaigo_config():
     """Configura el concepto y definición de Ahora Caigo."""
     body = request.get_json(force=True)
-    concept = body.get("concept", "").strip().upper()
-    definition = body.get("definition", "").strip()
-    
-    # Si viene vacío, sacar uno al azar del preset
-    if not concept:
-        conceptos = cargar_preset_archivo("conceptos.json", DEFAULT_CONCEPTOS)
-        item = random.choice(conceptos)
-        concept = item["concepto"]
-        definition = item["definicion"]
-        
     player_a = body.get("player_a_id")
     player_b = body.get("player_b_id")
     active_player = body.get("active_player_id") or player_a
     
     with data_lock:
         ac = estado_juego["ahoracaigo"]
-        ac["concept"] = concept
-        ac["definition"] = definition
-        ac["displayed_word"] = generar_mascara(concept)
         ac["player_a_id"] = player_a
         ac["player_b_id"] = player_b
         ac["active_player_id"] = active_player
         ac["status"] = "idle"
         ac["timer_active"] = False
         ac["points_awarded"] = 0
+        ac["correct_answers_count"] = 0
+        ac["used_concepts"] = []
+        
+        # Seleccionamos de inmediato la primera pregunta (dificultad facil)
+        concept, definition, difficulty = obtener_siguiente_pregunta_ahoracaigo(0, [])
+        ac["concept"] = concept
+        ac["definition"] = definition
+        ac["displayed_word"] = generar_mascara(concept)
+        ac["difficulty"] = difficulty
+        ac["used_concepts"] = [concept]
         
         estado_juego["active_screen"] = "game_ahoracaigo"
         
@@ -740,6 +767,15 @@ def ahoracaigo_iniciar():
         ac["timer_active"] = True
         ac["timer_start_time"] = time.time()
         ac["status"] = "playing"
+        
+        if not ac.get("concept"):
+            concept, definition, difficulty = obtener_siguiente_pregunta_ahoracaigo(0, [])
+            ac["concept"] = concept
+            ac["definition"] = definition
+            ac["displayed_word"] = generar_mascara(concept)
+            ac["difficulty"] = difficulty
+            ac["used_concepts"] = [concept]
+            
         if active_player_id:
             ac["active_player_id"] = int(active_player_id)
             
@@ -770,7 +806,7 @@ def ahoracaigo_revelar_letra():
 
 @app.route("/api/juego/ahoracaigo/correcto", methods=["POST"])
 def ahoracaigo_correcto():
-    """Marca acierto, calcula puntos y los asigna al jugador activo."""
+    """Marca acierto, calcula puntos, asigna al jugador activo y pasa al siguiente turno automáticamente."""
     body = request.get_json(force=True)
     remaining_time = body.get("remaining_time", 0)
     
@@ -801,16 +837,41 @@ def ahoracaigo_correcto():
         if not encontrado:
             return jsonify({"error": "Jugador activo no encontrado en la lista"}), 404
             
-        ac["status"] = "correct"
-        ac["timer_active"] = False
+        # Incrementar contador de correctas
+        ac["correct_answers_count"] += 1
+        
+        # Determinar el siguiente jugador
+        next_player_id = ac["player_b_id"] if jid == ac["player_a_id"] else ac["player_a_id"]
+        
+        # Seleccionar la nueva pregunta según la nueva dificultad
+        concept, definition, difficulty = obtener_siguiente_pregunta_ahoracaigo(
+            ac["correct_answers_count"], ac["used_concepts"]
+        )
+        
+        # Actualizar estado para el nuevo turno de forma automática e inmediata
+        ac["concept"] = concept
+        ac["definition"] = definition
+        ac["displayed_word"] = generar_mascara(concept)
+        ac["difficulty"] = difficulty
+        ac["used_concepts"].append(concept)
+        ac["active_player_id"] = next_player_id
+        
+        # Iniciar cronómetro de 30s de inmediato
+        ac["status"] = "playing"
+        ac["timer_active"] = True
+        ac["timer_start_time"] = time.time()
         ac["points_awarded"] = puntos
-        # Revelar por completo la palabra en proyector
-        ac["displayed_word"] = " ".join(list(ac["concept"]))
         
         guardar_datos()
         notificar_cambio()
         
-    return jsonify({"success": True, "puntos_asignados": puntos, "jugador": encontrado})
+    return jsonify({
+        "success": True, 
+        "puntos_asignados": puntos, 
+        "jugador": encontrado,
+        "next_player_id": next_player_id,
+        "ahoracaigo": ac
+    })
 
 @app.route("/api/juego/ahoracaigo/fallo", methods=["POST"])
 def ahoracaigo_fallo():

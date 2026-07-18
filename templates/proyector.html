@@ -181,36 +181,57 @@
                 <div class="projector-subtitle">[ CONTRARRELOJ VERSUS 1V1 ]</div>
             </div>
 
-            <!-- Marcador Versus 1v1 -->
-            <div class="versus-container">
-                <div class="versus-player" id="ac-player-a-box">JUGADOR A</div>
-                <div class="versus-vs">VS</div>
-                <div class="versus-player" id="ac-player-b-box">JUGADOR B</div>
+            <!-- Pantalla de Espera (Lobby) -->
+            <div id="ac-lobby-layout" style="display: none; text-align: center; width: 100%;">
+                <div class="versus-container" style="margin-top: 30px; margin-bottom: 30px;">
+                    <div class="versus-player" id="ac-lobby-player-a" style="font-size: 1.3rem; padding: 18px 36px; min-width: 280px;">JUGADOR A</div>
+                    <div class="versus-vs" style="font-size: 2.2rem;">VS</div>
+                    <div class="versus-player" id="ac-lobby-player-b" style="font-size: 1.3rem; padding: 18px 36px; min-width: 280px;">JUGADOR B</div>
+                </div>
+                <div class="pixel-panel accent-magenta" style="max-width: 700px; margin: 30px auto; padding: 30px; border-radius: 8px;">
+                    <div class="panel-title" style="color: var(--color-danger); font-size: 1.1rem; margin-bottom: 15px;">SALA DE ESPERA</div>
+                    <p class="pixel-blink" style="font-family: 'Press Start 2P', monospace; font-size: 0.95rem; color: var(--color-warning); line-height: 1.8; margin: 15px 0;">
+                        ¡PREPÁRENSE PARA EL VERSUS!
+                    </p>
+                    <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 15px; font-family: 'Press Start 2P', monospace;">
+                        EL ADMINISTRADOR INICIARÁ EL JUEGO...
+                    </p>
+                </div>
             </div>
 
-            <!-- Definición del Concepto -->
-            <div class="pixel-panel accent-info"
-                style="max-width: 800px; margin: 0 auto; text-align: center; padding: 25px;">
-                <div class="panel-title" style="color: var(--color-info);">DEFINICION</div>
-                <p id="ac-definition-text" style="font-size: 1.25rem; line-height: 1.6; color: #fff;">
-                    Cargando definición...
-                </p>
-            </div>
+            <!-- Pantalla de Juego Activo -->
+            <div id="ac-game-layout" style="display: block; width: 100%;">
+                <!-- Marcador Versus 1v1 -->
+                <div class="versus-container">
+                    <div class="versus-player" id="ac-player-a-box">JUGADOR A</div>
+                    <div class="versus-vs">VS</div>
+                    <div class="versus-player" id="ac-player-b-box">JUGADOR B</div>
+                </div>
 
-            <!-- Temporizador 30s -->
-            <div class="timer-30s-container">
-                <div id="ac-timer-bar-fill" class="timer-30s-bar" style="width: 100%;"></div>
-                <span class="timer-text" id="ac-timer-text">30s</span>
-            </div>
+                <!-- Definición del Concepto -->
+                <div class="pixel-panel accent-info"
+                    style="max-width: 800px; margin: 0 auto; text-align: center; padding: 25px;">
+                    <div class="panel-title" style="color: var(--color-info);">DEFINICION</div>
+                    <p id="ac-definition-text" style="font-size: 1.25rem; line-height: 1.6; color: #fff;">
+                        Cargando definición...
+                    </p>
+                </div>
 
-            <!-- Palabra Enmascarada -->
-            <div class="masked-word-container" id="ac-word-layout">
-                <!-- Se llena dinámicamente -->
-            </div>
+                <!-- Temporizador 30s -->
+                <div class="timer-30s-container">
+                    <div id="ac-timer-bar-fill" class="timer-30s-bar" style="width: 100%;"></div>
+                    <span class="timer-text" id="ac-timer-text">30s</span>
+                </div>
 
-            <!-- Superposición de Estado (Correcto/Timeout) -->
-            <div id="ac-status-overlay" style="display:none; text-align:center; margin-top:20px;">
-                <span id="ac-status-text" class="arcade-font pixel-blink" style="font-size:1.8rem;">ESTADO</span>
+                <!-- Palabra Enmascarada -->
+                <div class="masked-word-container" id="ac-word-layout">
+                    <!-- Se llena dinámicamente -->
+                </div>
+
+                <!-- Superposición de Estado (Correcto/Timeout) -->
+                <div id="ac-status-overlay" style="display:none; text-align:center; margin-top:20px;">
+                    <span id="ac-status-text" class="arcade-font pixel-blink" style="font-size:1.8rem;">ESTADO</span>
+                </div>
             </div>
         </div>
 
@@ -998,76 +1019,102 @@
                 const playerA = state.jugadores.find(j => j.id === ac.player_a_id);
                 const playerB = state.jugadores.find(j => j.id === ac.player_b_id);
 
-                const boxA = document.getElementById('ac-player-a-box');
-                const boxB = document.getElementById('ac-player-b-box');
+                const lobbyLayout = document.getElementById('ac-lobby-layout');
+                const gameLayout = document.getElementById('ac-game-layout');
 
-                boxA.innerText = playerA ? `${playerA.emoji} ${playerA.nombre}` : "JUGADOR A";
-                boxB.innerText = playerB ? `${playerB.emoji} ${playerB.nombre}` : "JUGADOR B";
+                if (ac.status === 'idle') {
+                    // Mostrar pantalla de espera (Lobby)
+                    if (lobbyLayout) lobbyLayout.style.display = 'block';
+                    if (gameLayout) gameLayout.style.display = 'none';
 
-                boxA.className = 'versus-player';
-                boxB.className = 'versus-player';
-                if (ac.active_player_id) {
-                    if (ac.active_player_id === ac.player_a_id) boxA.classList.add('active');
-                    if (ac.active_player_id === ac.player_b_id) boxB.classList.add('active');
-                }
+                    const lobbyPlayerA = document.getElementById('ac-lobby-player-a');
+                    const lobbyPlayerB = document.getElementById('ac-lobby-player-b');
 
-                document.getElementById('ac-definition-text').innerText = ac.definition || "CARGANDO CONCEPTO...";
-
-                const wordLayout = document.getElementById('ac-word-layout');
-                const displayChars = (ac.displayed_word || "").split(" ");
-                wordLayout.innerHTML = displayChars.map(char => {
-                    if (char === "") {
-                        return '';
-                    } else if (char === " ") {
-                        return `<div class="letter-box empty" style="border:none;box-shadow:none;">&nbsp;</div>`;
-                    } else if (char === "_") {
-                        return `<div class="letter-box empty">&nbsp;</div>`;
-                    } else {
-                        return `<div class="letter-box">${char}</div>`;
-                    }
-                }).join("");
-
-                if (ac.timer_active) {
-                    if (!acIsActiveTimer || acLastStartTime !== ac.timer_start_time) {
-                        acIsActiveTimer = true;
-                        acLastStartTime = ac.timer_start_time;
-                        startAhoraCaigoTimer(ac.timer_start_time);
-                    }
+                    if (lobbyPlayerA) lobbyPlayerA.innerText = playerA ? `${playerA.emoji} ${playerA.nombre}` : "JUGADOR A";
+                    if (lobbyPlayerB) lobbyPlayerB.innerText = playerB ? `${playerB.emoji} ${playerB.nombre}` : "JUGADOR B";
                 } else {
-                    clearInterval(acTimerInterval);
-                    acIsActiveTimer = false;
+                    // Mostrar pantalla de juego activo
+                    if (lobbyLayout) lobbyLayout.style.display = 'none';
+                    if (gameLayout) gameLayout.style.display = 'block';
 
-                    const bar = document.getElementById('ac-timer-bar-fill');
-                    const text = document.getElementById('ac-timer-text');
+                    const boxA = document.getElementById('ac-player-a-box');
+                    const boxB = document.getElementById('ac-player-b-box');
 
-                    if (ac.status === "correct") {
-                        bar.style.width = "100%";
-                        bar.className = 'timer-30s-bar';
-                        text.innerText = "¡RESPUESTA CORRECTA!";
-                    } else if (ac.status === "timeout") {
-                        bar.style.width = "0%";
-                        bar.className = 'timer-30s-bar danger';
-                        text.innerText = "¡TIEMPO AGOTADO!";
-                    } else {
-                        bar.style.width = "100%";
-                        bar.className = 'timer-30s-bar';
-                        text.innerText = "30s";
+                    if (boxA) boxA.innerText = playerA ? `${playerA.emoji} ${playerA.nombre}` : "JUGADOR A";
+                    if (boxB) boxB.innerText = playerB ? `${playerB.emoji} ${playerB.nombre}` : "JUGADOR B";
+
+                    if (boxA) boxA.className = 'versus-player';
+                    if (boxB) boxB.className = 'versus-player';
+                    if (ac.active_player_id) {
+                        if (ac.active_player_id === ac.player_a_id && boxA) boxA.classList.add('active');
+                        if (ac.active_player_id === ac.player_b_id && boxB) boxB.classList.add('active');
                     }
-                }
 
-                const overlay = document.getElementById('ac-status-overlay');
-                const overlayText = document.getElementById('ac-status-text');
+                    const defText = document.getElementById('ac-definition-text');
+                    if (defText) defText.innerText = ac.definition || "CARGANDO CONCEPTO...";
 
-                if (ac.status === "correct") {
-                    overlay.style.display = "block";
-                    overlayText.innerText = `¡CORRECTO! (+${ac.points_awarded} PTS)`;
-                    overlayText.style.color = "var(--color-success)";
-                } else if (ac.status === "timeout") {
-                    overlay.style.display = "block";
-                    overlayText.innerText = "¡TIEMPO AGOTADO!";
-                    overlayText.style.color = "var(--color-danger)";
-                } else {
-                    overlay.style.display = "none";
+                    const wordLayout = document.getElementById('ac-word-layout');
+                    if (wordLayout) {
+                        const displayChars = (ac.displayed_word || "").split(" ");
+                        wordLayout.innerHTML = displayChars.map(char => {
+                            if (char === "") {
+                                return '';
+                            } else if (char === " ") {
+                                return `<div class="letter-box empty" style="border:none;box-shadow:none;">&nbsp;</div>`;
+                            } else if (char === "_") {
+                                return `<div class="letter-box empty">&nbsp;</div>`;
+                            } else {
+                                return `<div class="letter-box">${char}</div>`;
+                            }
+                        }).join("");
+                    }
+
+                    if (ac.timer_active) {
+                        if (!acIsActiveTimer || acLastStartTime !== ac.timer_start_time) {
+                            acIsActiveTimer = true;
+                            acLastStartTime = ac.timer_start_time;
+                            startAhoraCaigoTimer(ac.timer_start_time);
+                        }
+                    } else {
+                        clearInterval(acTimerInterval);
+                        acIsActiveTimer = false;
+
+                        const bar = document.getElementById('ac-timer-bar-fill');
+                        const text = document.getElementById('ac-timer-text');
+
+                        if (bar && text) {
+                            if (ac.status === "correct") {
+                                bar.style.width = "100%";
+                                bar.className = 'timer-30s-bar';
+                                text.innerText = "¡RESPUESTA CORRECTA!";
+                            } else if (ac.status === "timeout") {
+                                bar.style.width = "0%";
+                                bar.className = 'timer-30s-bar danger';
+                                text.innerText = "¡TIEMPO AGOTADO!";
+                            } else {
+                                bar.style.width = "100%";
+                                bar.className = 'timer-30s-bar';
+                                text.innerText = "30s";
+                            }
+                        }
+                    }
+
+                    const overlay = document.getElementById('ac-status-overlay');
+                    const overlayText = document.getElementById('ac-status-text');
+
+                    if (overlay && overlayText) {
+                        if (ac.status === "correct") {
+                            overlay.style.display = "block";
+                            overlayText.innerText = `¡CORRECTO! (+${ac.points_awarded} PTS)`;
+                            overlayText.style.color = "var(--color-success)";
+                        } else if (ac.status === "timeout") {
+                            overlay.style.display = "block";
+                            overlayText.innerText = "¡TIEMPO AGOTADO!";
+                            overlayText.style.color = "var(--color-danger)";
+                        } else {
+                            overlay.style.display = "none";
+                        }
+                    }
                 }
             }
 

@@ -6,7 +6,7 @@
       "puntaje_total": 0,
       "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784413186.4033551
+      "timestamp_actualizacion": 1784416079.4302633
     },
     {
       "id": 2,
@@ -14,7 +14,7 @@
       "puntaje_total": 0,
       "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784413186.4033551
+      "timestamp_actualizacion": 1784416079.4302633
     },
     {
       "id": 3,
@@ -22,7 +22,7 @@
       "puntaje_total": 0,
       "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784413186.4033551
+      "timestamp_actualizacion": 1784416079.4302633
     },
     {
       "id": 4,
@@ -30,7 +30,7 @@
       "puntaje_total": 0,
       "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784413186.4033551
+      "timestamp_actualizacion": 1784416079.4302633
     },
     {
       "id": 5,
@@ -38,7 +38,7 @@
       "puntaje_total": 0,
       "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784413186.4033551
+      "timestamp_actualizacion": 1784416079.4302633
     },
     {
       "id": 6,
@@ -46,7 +46,7 @@
       "puntaje_total": 0,
       "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784413186.4033551
+      "timestamp_actualizacion": 1784416079.4302633
     },
     {
       "id": 7,
@@ -54,7 +54,7 @@
       "puntaje_total": 0,
       "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784413186.4033551
+      "timestamp_actualizacion": 1784416079.4302633
     },
     {
       "id": 8,
@@ -62,18 +62,18 @@
       "puntaje_total": 0,
       "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784413186.4033551
+      "timestamp_actualizacion": 1784416079.4302633
     },
     {
       "id": 9,
       "nombre": "Isma",
-      "puntaje_total": 40,
+      "puntaje_total": 0,
       "emoji": "👾",
-      "ultimo_cambio": 40,
-      "timestamp_actualizacion": 1784413830.736128
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784416079.4302633
     }
   ],
-  "active_screen": "game_memorice",
+  "active_screen": "start",
   "score_goal": 100,
   "memorice": {
     "words": [
@@ -123,16 +123,21 @@
     "audio_url": ""
   },
   "ahoracaigo": {
-    "concept": "REDENCION",
-    "definition": "Rescatar o librar a alguien pagando un precio o rescate.",
-    "displayed_word": "R E D E N C I O N",
-    "player_a_id": 9,
+    "concept": "MILAGRO",
+    "definition": "Un hecho sobrenatural obrado por el poder de Dios.",
+    "displayed_word": "M _ _ A _ _ O",
+    "player_a_id": 7,
     "player_b_id": 4,
-    "active_player_id": 9,
+    "active_player_id": 7,
     "timer_active": false,
-    "timer_start_time": 1784413822.493351,
-    "status": "correct",
-    "points_awarded": 40
+    "timer_start_time": 1784415982.0990155,
+    "status": "idle",
+    "points_awarded": 0,
+    "correct_answers_count": 0,
+    "used_concepts": [
+      "MILAGRO"
+    ],
+    "difficulty": "facil"
   },
   "ruleta": {
     "selected_player_id": null,

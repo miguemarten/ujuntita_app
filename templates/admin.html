@@ -451,11 +451,6 @@
                             <button id="ac-correct-btn" onclick="registrarCorrecto()" class="pixel-btn pixel-btn-success" style="width: 100%; font-size: 0.85rem; padding: 15px 5px; display: none;">
                                 👍 ¡RESPUESTA CORRECTA! (Siguiente Turno)
                             </button>
-                            
-                            <!-- Botón Falló / Tiempo -->
-                            <button id="ac-fail-btn" onclick="registrarFallo()" class="pixel-btn pixel-btn-danger" style="width: 100%; font-size: 0.85rem; padding: 15px 5px; display: none;">
-                                ❌ FALLÓ / TIEMPO
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -846,20 +841,16 @@
                 // Sincronizar botones de flujo según el estado
                 const startBtn = document.getElementById('ac-start-versus-btn');
                 const correctBtn = document.getElementById('ac-correct-btn');
-                const failBtn = document.getElementById('ac-fail-btn');
                 
                 if (state.ahoracaigo.status === "idle") {
                     if (startBtn) startBtn.style.display = "block";
                     if (correctBtn) correctBtn.style.display = "none";
-                    if (failBtn) failBtn.style.display = "none";
                 } else if (state.ahoracaigo.status === "playing") {
                     if (startBtn) startBtn.style.display = "none";
                     if (correctBtn) correctBtn.style.display = "block";
-                    if (failBtn) failBtn.style.display = "block";
                 } else {
                     if (startBtn) startBtn.style.display = "none";
                     if (correctBtn) correctBtn.style.display = "none";
-                    if (failBtn) failBtn.style.display = "none";
                 }
 
                 // Sincronizar reloj por SSE
@@ -1429,9 +1420,11 @@
                 if (res.ok) {
                     const data = await res.json();
                     showCustomAlert(`¡CORRECTO! Asignados +${data.puntos_asignados} puntos a ${data.jugador.nombre}`, "SUCESO");
+                    fetchEstado();
                 } else {
                     const err = await res.json();
                     showCustomAlert(err.error, "ERROR");
+                    fetchEstado();
                 }
             } catch (err) {
                 console.error(err);
@@ -1443,6 +1436,7 @@
             try {
                 await fetch('/api/juego/ahoracaigo/fallo', { method: 'POST' });
                 showCustomAlert("¡TIEMPO AGOTADO! Turno fallido.", "FIN DE TURNO");
+                fetchEstado();
             } catch (err) {
                 console.error(err);
             }

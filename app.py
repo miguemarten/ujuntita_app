@@ -722,6 +722,8 @@ def ahoracaigo_config():
         ac["timer_active"] = False
         ac["points_awarded"] = 0
         
+        estado_juego["active_screen"] = "game_ahoracaigo"
+        
         guardar_datos()
         notificar_cambio()
         

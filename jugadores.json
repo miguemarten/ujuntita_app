@@ -2,53 +2,101 @@
   "jugadores": [
     {
       "id": 1,
-      "nombre": "J1",
+      "nombre": "Mati",
       "puntaje_total": 0,
       "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784342137.8913004
+      "timestamp_actualizacion": 1784413186.4033551
     },
     {
       "id": 2,
-      "nombre": "J2",
+      "nombre": "Fran",
       "puntaje_total": 0,
-      "emoji": "🕹️",
+      "emoji": "👾",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784342137.8913004
+      "timestamp_actualizacion": 1784413186.4033551
     },
     {
       "id": 3,
-      "nombre": "J3",
-      "puntaje_total": 10,
-      "emoji": "🚀",
-      "ultimo_cambio": 10,
-      "timestamp_actualizacion": 1784342275.4607918
+      "nombre": "Rosita",
+      "puntaje_total": 0,
+      "emoji": "👾",
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784413186.4033551
+    },
+    {
+      "id": 4,
+      "nombre": "Martin",
+      "puntaje_total": 0,
+      "emoji": "👾",
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784413186.4033551
+    },
+    {
+      "id": 5,
+      "nombre": "Martina",
+      "puntaje_total": 0,
+      "emoji": "👾",
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784413186.4033551
+    },
+    {
+      "id": 6,
+      "nombre": "Vale",
+      "puntaje_total": 0,
+      "emoji": "👾",
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784413186.4033551
+    },
+    {
+      "id": 7,
+      "nombre": "Elias",
+      "puntaje_total": 0,
+      "emoji": "👾",
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784413186.4033551
+    },
+    {
+      "id": 8,
+      "nombre": "Maricel",
+      "puntaje_total": 0,
+      "emoji": "👾",
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784413186.4033551
+    },
+    {
+      "id": 9,
+      "nombre": "Isma",
+      "puntaje_total": 40,
+      "emoji": "👾",
+      "ultimo_cambio": 40,
+      "timestamp_actualizacion": 1784413830.736128
     }
   ],
-  "active_screen": "scoreboard",
+  "active_screen": "game_memorice",
   "score_goal": 100,
   "memorice": {
     "words": [
-      "PACMAN",
-      "TETRIS",
-      "PONG",
-      "DOOM",
-      "ZELDA",
-      "METROID",
-      "GALAGA",
-      "FROGGER",
-      "ASTEROIDS"
+      "PIZZA",
+      "BURGER",
+      "HELADO",
+      "DONA",
+      "NUGGETS",
+      "SUSHI",
+      "TACOS",
+      "PALOMITAS",
+      "HOTDOG"
     ],
     "order": [
-      5,
+      6,
+      4,
       2,
       8,
-      6,
-      0,
-      1,
+      5,
+      7,
       3,
-      4,
-      7
+      1,
+      0
     ],
     "current_order_index": 0,
     "revealed_indices": [],
@@ -60,8 +108,8 @@
     ],
     "active_player_index": 0,
     "timer_active": false,
-    "timer_start_time": 1784340436.0777028,
-    "status": "memorizing"
+    "timer_start_time": 1784413125.4517574,
+    "status": "idle"
   },
   "music": {
     "clues": [
@@ -75,24 +123,24 @@
     "audio_url": ""
   },
   "ahoracaigo": {
-    "concept": "APOSTOL",
-    "definition": "Mensajero enviado con una misión o autoridad especial.",
-    "displayed_word": "A P O S T O L",
-    "player_a_id": 3,
-    "player_b_id": 2,
-    "active_player_id": 2,
+    "concept": "REDENCION",
+    "definition": "Rescatar o librar a alguien pagando un precio o rescate.",
+    "displayed_word": "R E D E N C I O N",
+    "player_a_id": 9,
+    "player_b_id": 4,
+    "active_player_id": 9,
     "timer_active": false,
-    "timer_start_time": 1784411625.0315413,
-    "status": "timeout",
-    "points_awarded": 0
+    "timer_start_time": 1784413822.493351,
+    "status": "correct",
+    "points_awarded": 40
   },
   "ruleta": {
-    "selected_player_id": 3,
-    "spin_trigger": 13,
-    "question": "¿Cuál es la caricatura o dibujo animado de tu infancia que más recuerdas?",
+    "selected_player_id": null,
+    "spin_trigger": 0,
+    "question": "¡Gira la ruleta para comenzar!",
     "level": "verde",
     "points": 10,
-    "status": "selected"
+    "status": "idle"
   },
   "probable": {
     "question": "¿Quién es más probable que sobreviva a un apocalipsis zombie?",

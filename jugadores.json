@@ -1,0 +1,104 @@
+{
+  "jugadores": [
+    {
+      "id": 1,
+      "nombre": "J1",
+      "puntaje_total": 0,
+      "emoji": "👾",
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784342137.8913004
+    },
+    {
+      "id": 2,
+      "nombre": "J2",
+      "puntaje_total": 0,
+      "emoji": "🕹️",
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784342137.8913004
+    },
+    {
+      "id": 3,
+      "nombre": "J3",
+      "puntaje_total": 10,
+      "emoji": "🚀",
+      "ultimo_cambio": 10,
+      "timestamp_actualizacion": 1784342275.4607918
+    }
+  ],
+  "active_screen": "game_ruleta",
+  "score_goal": 100,
+  "memorice": {
+    "words": [
+      "ATARI",
+      "NES",
+      "GENESIS",
+      "GAMEBOY",
+      "SUPER NES",
+      "N64",
+      "PLAYSTATION",
+      "DREAMCAST",
+      "WII"
+    ],
+    "order": [
+      5,
+      2,
+      8,
+      6,
+      0,
+      1,
+      3,
+      4,
+      7
+    ],
+    "current_order_index": 2,
+    "revealed_indices": [
+      5,
+      2
+    ],
+    "error_index": -1,
+    "players_ids": [
+      1,
+      2,
+      3
+    ],
+    "active_player_index": 2,
+    "timer_active": false,
+    "timer_start_time": 1784340436.0777028,
+    "status": "idle"
+  },
+  "music": {
+    "clues": [
+      "Reproducir 1 segundo de audio",
+      "En Espíritu y en Verdad",
+      "Hacia el mundo que tú amas",
+      "2012",
+      "S__o_ _i__es"
+    ],
+    "revealed_level": 0,
+    "audio_url": ""
+  },
+  "ahoracaigo": {
+    "concept": "APOSTOL",
+    "definition": "Mensajero enviado con una misión o autoridad especial.",
+    "displayed_word": "A P O S T O L",
+    "player_a_id": 3,
+    "player_b_id": 2,
+    "active_player_id": 2,
+    "timer_active": false,
+    "timer_start_time": 1784340629.1077964,
+    "status": "idle",
+    "points_awarded": 0
+  },
+  "ruleta": {
+    "selected_player_id": 3,
+    "spin_trigger": 13,
+    "question": "¿Cuál es la caricatura o dibujo animado de tu infancia que más recuerdas?",
+    "level": "verde",
+    "points": 10,
+    "status": "selected"
+  },
+  "probable": {
+    "question": "¿Quién es más probable que sobreviva a un apocalipsis zombie?",
+    "winners_ids": []
+  }
+}

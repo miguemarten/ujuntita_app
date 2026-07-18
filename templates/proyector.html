@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UJuntita - Pantalla de Proyección</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* Estilos específicos de pantalla completa para proyección */
+        body {
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 90vh;
+        }
+
+        #audio-unlock-banner {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: var(--color-danger);
+            color: #fff;
+            border: 4px solid #fff;
+            padding: 8px 12px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.6rem;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 4px 4px 0 #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BANNER PARA DESBLOQUEAR AUDIO -->
+    <div id="audio-unlock-banner" onclick="unlockAudio()">
+        🔊 CLIC EN PANTALLA PARA ACTIVAR AUDIO/RETRO FX
+    </div>
+
+    <div class="projector-container">
+
+        <!-- PANTALLA 1: INICIO (START) -->
+        <div id="screen-start" class="projector-screen projector-panel active">
+            <div class="screen-start-content">
+                <div class="logo-big arcade-font">UJUNTITA</div>
+                <div class="pixel-panel accent-green" style="max-width: 600px; margin: 0 auto; padding: 30px;">
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px;">
+                        BIENVENIDOS A LA REUNIÓN JUVENIL
+                    </p>
+                    <p style="color: var(--color-text-muted); font-size: 0.85rem;">
+                        PREPÁRENSE PARA EL DESAFÍO DE HOY
+                    </p>
+                </div>
+                <div class="press-start-txt pixel-blink">INSERT COINS / PRESS START</div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 2: TABLA DE POSICIONES (SCOREBOARD) -->
+        <div id="screen-scoreboard" class="projector-screen">
+            <div class="projector-header">
+                <h1 class="projector-title">TABLA DE POSICIONES</h1>
+                <div class="projector-subtitle">[ JUNTANDO PUNTOS POR EL PREMIO ]</div>
+            </div>
+
+            <!-- PODIO (TOP 3) -->
+            <div class="podium-container" id="podium-layout">
+                <!-- Se llena dinámicamente -->
+            </div>
+
+            <!-- LISTA GENERAL Y BARRAS DE PROGRESO DE META -->
+            <div class="pixel-panel accent-white" style="margin-top: 30px;">
+                <div class="panel-title" style="color: #fff;">SCOREBOARD GENERAL</div>
+                <div id="scoreboard-items-list" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 3: CELEBRACIÓN DE GANADOR (WINNER) - PODIO RETRO ARCADE -->
+        <div id="screen-winner" class="projector-screen">
+            <div class="winner-screen-content">
+                <div class="winner-banner arcade-font" style="font-size: 1.8rem; margin-bottom: 20px;">CONGRATULATIONS!
+                </div>
+
+                <!-- Podio Arcade de 3 Posiciones -->
+                <div class="podium-arcade" id="podium-arcade-layout">
+                    <!-- Se llena dinámicamente con los 3 primeros bloques -->
+                </div>
+
+                <div class="pixel-panel accent-yellow" style="max-width: 600px; margin: 0 auto; padding: 25px;">
+                    <p
+                        style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; color: var(--color-warning);">
+                        ★ CAMPEONES DE LA JUNTITA ★
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 4: JUEGO MEMORICE DE PALABRAS REDISEÑADO -->
+        <div id="screen-game_memorice" class="projector-screen">
+            <div class="projector-header">
+                <h1 class="projector-title">MEMORICE DE PALABRAS</h1>
+                <div class="projector-subtitle" id="memorice-status-subtitle">[ MEMORIZA LAS CASILLAS ]</div>
+            </div>
+
+            <!-- Temporizador 70s -->
+            <div class="memorice-timer-container">
+                <div id="memorice-timer-fill" class="memorice-timer-bar" style="width: 100%;"></div>
+                <span class="memorice-timer-text" id="memorice-timer-text">70s</span>
+            </div>
+
+            <!-- Grilla 3x3 -->
+            <div class="memorice-grid" id="memorice-grid-layout">
+                <!-- Se llena dinámicamente -->
+            </div>
+
+            <!-- Panel de Turno de Participantes -->
+            <div class="memorice-players-panel" id="memorice-players-layout">
+                <!-- Se llena dinámicamente -->
+            </div>
+
+            <!-- Superposición de Victoria / Derrota -->
+            <div id="memorice-overlay" style="display: none; text-align: center; margin-top: 25px;">
+                <span id="memorice-overlay-text" class="arcade-font pixel-blink"
+                    style="font-size: 1.8rem;">ESTADO</span>
+            </div>
+        </div>
+
+        <!-- PANTALLA 5: JUEGO DE LA PISTA MUSICAL -->
+        <div id="screen-game_music" class="projector-screen">
+            <div class="projector-header">
+                <h1 class="projector-title">PISTA MUSICAL</h1>
+                <div class="projector-subtitle">[ ADIVINA LA CANCION CON EL MINIMO DE PISTAS ]</div>
+            </div>
+
+            <div class="cassette-player">
+                <div class="cassette-label">RETRO CASSETTE RECORDER</div>
+                <div class="cassette-window">
+                    <div class="spool" id="spool-left"></div>
+                    <div class="spool" id="spool-right"></div>
+                </div>
+
+                <div class="led-group">
+                    <div class="led-indicator">
+                        <div class="led-light" id="led-1"></div>
+                        <span class="led-text">P1 (50)</span>
+                    </div>
+                    <div class="led-indicator">
+                        <div class="led-light" id="led-2"></div>
+                        <span class="led-text">P2 (40)</span>
+                    </div>
+                    <div class="led-indicator">
+                        <div class="led-light" id="led-3"></div>
+                        <span class="led-text">P3 (30)</span>
+                    </div>
+                    <div class="led-indicator">
+                        <div class="led-light" id="led-4"></div>
+                        <span class="led-text">P4 (20)</span>
+                    </div>
+                    <div class="led-indicator">
+                        <div class="led-light" id="led-5"></div>
+                        <span class="led-text">P5 (10)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="music-clues-container" id="music-clues-layout">
+                <!-- Se llena dinámicamente -->
+            </div>
+
+            <audio id="music-audio-element" style="display: none;"></audio>
+        </div>
+
+        <!-- PANTALLA 6: JUEGO AHORA CAIGO -->
+        <div id="screen-game_ahoracaigo" class="projector-screen">
+            <div class="projector-header">
+                <h1 class="projector-title">AHORA CAIGO</h1>
+                <div class="projector-subtitle">[ CONTRARRELOJ VERSUS 1V1 ]</div>
+            </div>
+
+            <!-- Marcador Versus 1v1 -->
+            <div class="versus-container">
+                <div class="versus-player" id="ac-player-a-box">JUGADOR A</div>
+                <div class="versus-vs">VS</div>
+                <div class="versus-player" id="ac-player-b-box">JUGADOR B</div>
+            </div>
+
+            <!-- Definición del Concepto -->
+            <div class="pixel-panel accent-info"
+                style="max-width: 800px; margin: 0 auto; text-align: center; padding: 25px;">
+                <div class="panel-title" style="color: var(--color-info);">DEFINICION</div>
+                <p id="ac-definition-text" style="font-size: 1.25rem; line-height: 1.6; color: #fff;">
+                    Cargando definición...
+                </p>
+            </div>
+
+            <!-- Temporizador 30s -->
+            <div class="timer-30s-container">
+                <div id="ac-timer-bar-fill" class="timer-30s-bar" style="width: 100%;"></div>
+                <span class="timer-text" id="ac-timer-text">30s</span>
+            </div>
+
+            <!-- Palabra Enmascarada -->
+            <div class="masked-word-container" id="ac-word-layout">
+                <!-- Se llena dinámicamente -->
+            </div>
+
+            <!-- Superposición de Estado (Correcto/Timeout) -->
+            <div id="ac-status-overlay" style="display:none; text-align:center; margin-top:20px;">
+                <span id="ac-status-text" class="arcade-font pixel-blink" style="font-size:1.8rem;">ESTADO</span>
+            </div>
+        </div>
+
+        <!-- PANTALLA 7: LA RULETA ROMPEHIELO -->
+        <div id="screen-game_ruleta" class="projector-screen">
+            <div class="projector-header">
+                <h1 class="projector-title">LA RULETA ROMPEHIELO</h1>
+                <div class="projector-subtitle">[ DESCUBRE QUIÉN RESPONDE LA PREGUNTA ]</div>
+            </div>
+
+            <!-- Spinner Visual de Emojis/Jugadores -->
+            <div class="ruleta-spinner-container">
+                <div class="spinner-marker"></div>
+                <div class="ruleta-spinner-track" id="ruleta-track">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Tarjeta de Pregunta Revelada -->
+            <div id="ruleta-question-card" class="card-question" style="display: none;">
+                <div class="card-question-title" id="ruleta-card-title">NIVEL VERDE</div>
+                <div class="card-question-text" id="ruleta-card-text">Pregunta...</div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 8: JUEGO ¿QUIÉN ES MÁS PROBABLE QUE...? -->
+        <div id="screen-game_probable" class="projector-screen">
+            <div class="projector-header">
+                <h1 class="projector-title">¿QUIÉN ES MÁS PROBABLE QUE...?</h1>
+                <div class="projector-subtitle">[ APUNTA AL JUGADOR MÁS VOTADO POR EL GRUPO ]</div>
+            </div>
+
+            <div class="probable-question-card">
+                <p class="probable-question-text" id="probable-question-prompt">
+                    ¿Cargando premisa...?
+                </p>
+            </div>
+
+            <div class="probable-players-grid" id="probable-players-grid-layout">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS AUDIO RETRO Y SSE -->
+    <script>
+        let audioCtx = null;
+        let isAudioUnlocked = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function unlockAudio() {
+            initAudio();
+            isAudioUnlocked = true;
+            document.getElementById('audio-unlock-banner').style.display = 'none';
+            playRetroSound('coin');
+        }
+
+        function playRetroSound(type) {
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'coin') {
+                osc.type = 'square';
+                const now = audioCtx.currentTime;
+                osc.frequency.setValueAtTime(987.77, now);
+                osc.frequency.setValueAtTime(1318.51, now + 0.08);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.005, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'hit') {
+                osc.type = 'sawtooth';
+                const now = audioCtx.currentTime;
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.25);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.linearRampToValueAtTime(0.005, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } else if (type === 'win') {
+                osc.type = 'triangle';
+                const now = audioCtx.currentTime;
+                const notes = [261.63, 329.63, 392.00, 523.25];
+                notes.forEach((freq, idx) => {
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                });
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.setValueAtTime(0.08, now + 0.36);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+
+        function playTictacSound(isUrgent) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.type = 'sine';
+            const now = audioCtx.currentTime;
+            osc.frequency.setValueAtTime(isUrgent ? 800 : 500, now);
+            gain.gain.setValueAtTime(isUrgent ? 0.05 : 0.03, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+            osc.start(now);
+            osc.stop(now + 0.04);
+        }
+
+        // --- SISTEMA DE CONFETI DE PÍXELES (CANVAS RAIN) ---
+        let canvasConfetti = null;
+        let ctxConfetti = null;
+        let confettiInterval = null;
+        let confettiParticles = [];
+
+        function startConfetti() {
+            canvasConfetti = document.getElementById('confetti-canvas');
+            if (!canvasConfetti) {
+                canvasConfetti = document.createElement('canvas');
+                canvasConfetti.id = 'confetti-canvas';
+                canvasConfetti.style.position = 'fixed';
+                canvasConfetti.style.top = '0';
+                canvasConfetti.style.left = '0';
+                canvasConfetti.style.width = '100vw';
+                canvasConfetti.style.height = '100vh';
+                canvasConfetti.style.pointerEvents = 'none';
+                canvasConfetti.style.zIndex = '999';
+                document.body.appendChild(canvasConfetti);
+            }
+            ctxConfetti = canvasConfetti.getContext('2d');
+            resizeConfettiCanvas();
+            window.addEventListener('resize', resizeConfettiCanvas);
+
+            confettiParticles = [];
+            for (let i = 0; i < 120; i++) {
+                confettiParticles.push({
+                    x: Math.random() * canvasConfetti.width,
+                    y: Math.random() * canvasConfetti.height - canvasConfetti.height,
+                    size: Math.floor(Math.random() * 8) + 6,
+                    color: ['#ff0055', '#00ffcc', '#ffcc00', '#ff00ff', '#00ff00', '#00ffff'][Math.floor(Math.random() * 6)],
+                    speedY: Math.random() * 3 + 2,
+                    speedX: Math.random() * 2 - 1
+                });
+            }
+
+            clearInterval(confettiInterval);
+            confettiInterval = setInterval(drawConfettiParticles, 30);
+        }
+
+        function resizeConfettiCanvas() {
+            if (canvasConfetti) {
+                canvasConfetti.width = window.innerWidth;
+                canvasConfetti.height = window.innerHeight;
+            }
+        }
+
+        function drawConfettiParticles() {
+            ctxConfetti.clearRect(0, 0, canvasConfetti.width, canvasConfetti.height);
+            confettiParticles.forEach(p => {
+                ctxConfetti.fillStyle = p.color;
+                ctxConfetti.fillRect(p.x, p.y, p.size, p.size);
+                p.y += p.speedY;
+                p.x += p.speedX;
+                if (p.y > canvasConfetti.height) {
+                    p.y = -p.size;
+                    p.x = Math.random() * canvasConfetti.width;
+                }
+            });
+        }
+
+        function stopConfetti() {
+            clearInterval(confettiInterval);
+            if (canvasConfetti && canvasConfetti.parentNode) {
+                canvasConfetti.parentNode.removeChild(canvasConfetti);
+                canvasConfetti = null;
+            }
+        }
+    </script>
+
+    <!-- PROYECTOR SSE CLIENT LOGIC -->
+    <script>
+        let cachedScores = {};
+        let currentActiveScreen = 'start';
+
+        // Memorice triggers
+        let lastRevealTrigger = 0;
+        let lastErrorIndex = -1;
+        let memTimerInterval = null;
+        let memLastTickedSecond = -1;
+        let memLastStartTime = 0;
+        let memIsActiveTimer = false;
+
+        // Pista musical triggers
+        let lastRevealedLevel = 0;
+        let isPlaying1sAudio = false;
+
+        // Ahora Caigo triggers
+        let acTimerInterval = null;
+        let acLastTickedSecond = -1;
+        let acLastStartTime = 0;
+        let acIsActiveTimer = false;
+
+        // Ruleta triggers
+        let ruLastSpinTrigger = 0;
+        let ruIsSpinning = false;
+
+        function triggerMemoriceReveal() {
+            // Ya no usamos triggerMemoriceReveal en el proyector puesto que se controla por estados del backend ('memorizing' / 'playing')
+        }
+
+        function reproduceUnSegundoAudio() {
+            const audioEl = document.getElementById('music-audio-element');
+            const spoolL = document.getElementById('spool-left');
+            const spoolR = document.getElementById('spool-right');
+
+            if (!audioEl.src || isPlaying1sAudio) return;
+
+            isPlaying1sAudio = true;
+            audioEl.currentTime = 0;
+
+            audioEl.play().then(() => {
+                spoolL.classList.add('spinning');
+                spoolR.classList.add('spinning');
+
+                setTimeout(() => {
+                    audioEl.pause();
+                    audioEl.currentTime = 0;
+                    spoolL.classList.remove('spinning');
+                    spoolR.classList.remove('spinning');
+                    isPlaying1sAudio = false;
+                }, 1000);
+            }).catch(err => {
+                console.log("Autoplay bloqueado.", err);
+                isPlaying1sAudio = false;
+            });
+        }
+
+        // Ejecutar cronómetro 30s de Ahora Caigo
+        function startAhoraCaigoTimer(startTime) {
+            clearInterval(acTimerInterval);
+            acLastTickedSecond = -1;
+
+            acTimerInterval = setInterval(() => {
+                const elapsed = (Date.now() / 1000) - startTime;
+                const remaining = Math.max(0, 30 - elapsed);
+                const pct = (remaining / 30) * 100;
+
+                const bar = document.getElementById('ac-timer-bar-fill');
+                const text = document.getElementById('ac-timer-text');
+
+                if (bar && text) {
+                    bar.style.width = pct + "%";
+                    text.innerText = Math.ceil(remaining) + "s";
+
+                    bar.className = 'timer-30s-bar';
+                    if (remaining < 10) {
+                        bar.classList.add('danger');
+                    } else if (remaining < 20) {
+                        bar.classList.add('warning');
+                    }
+
+                    const currentSecond = Math.ceil(remaining);
+                    if (currentSecond !== acLastTickedSecond && currentSecond > 0) {
+                        acLastTickedSecond = currentSecond;
+                        playTictacSound(currentSecond <= 8);
+                    }
+                }
+
+                if (remaining <= 0) {
+                    clearInterval(acTimerInterval);
+                }
+            }, 100);
+        }
+
+        // Ejecutar cronómetro 70s de Memorice
+        function startRedesignedMemTimer(startTime) {
+            clearInterval(memTimerInterval);
+            memLastTickedSecond = -1;
+
+            memTimerInterval = setInterval(() => {
+                const elapsed = (Date.now() / 1000) - startTime;
+                const remaining = Math.max(0, 70 - elapsed);
+                const pct = (remaining / 70) * 100;
+
+                const bar = document.getElementById('memorice-timer-fill');
+                const text = document.getElementById('memorice-timer-text');
+
+                if (bar && text) {
+                    bar.style.width = pct + "%";
+                    text.innerText = Math.ceil(remaining) + "s";
+
+                    bar.className = 'memorice-timer-bar';
+                    if (remaining < 15) {
+                        bar.classList.add('danger');
+                    } else if (remaining < 35) {
+                        bar.classList.add('warning');
+                    }
+
+                    const currentSecond = Math.ceil(remaining);
+                    if (currentSecond !== memLastTickedSecond && currentSecond > 0) {
+                        memLastTickedSecond = currentSecond;
+                        playTictacSound(currentSecond <= 10);
+                    }
+                }
+
+                if (remaining <= 0) {
+                    clearInterval(memTimerInterval);
+                }
+            }, 100);
+        }
+
+        // Ejecutar animación de Ruleta Giratoria
+        function animarGiroRuleta(state, onComplete) {
+            const track = document.getElementById('ruleta-track');
+            const questionCard = document.getElementById('ruleta-question-card');
+            questionCard.style.display = "none";
+
+            const jugadores = state.jugadores || [];
+            if (jugadores.length === 0) return;
+
+            // Aumentar a 10 repeticiones para un giro más dinámico y evitar bordes vacíos
+            const repeats = 10;
+            let longList = [];
+            for (let i = 0; i < repeats; i++) {
+                longList = longList.concat(jugadores);
+            }
+
+            const chosenId = state.ruleta.selected_player_id;
+            const chosenIndexInList = jugadores.findIndex(j => j.id === chosenId);
+
+            // Detener el giro 5 ciclos después del inicio
+            const finalStopIndex = (jugadores.length * 5) + chosenIndexInList;
+
+            track.innerHTML = longList.map((j, idx) => `
+                <div class="spinner-card" id="spin-card-${idx}">
+                    <span style="font-size: 2.2rem;">${j.emoji}</span>
+                    <span style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: #fff;">
+                        ${j.nombre.toUpperCase()}
+                    </span>
+                </div>
+            `).join('');
+
+            const cardWidth = 145; // Ancho de carta (130px) + Gap (15px)
+            const halfCardWidth = 65; // Mitad del ancho de la carta (130px / 2)
+
+            // Inicializar la posición en la primera carta sin transformaciones CSS molestas
+            track.style.transition = 'none';
+            track.style.transform = 'none';
+            track.style.left = `calc(50% - ${halfCardWidth}px)`;
+
+            let count = 0;
+            let tickDelay = 50;
+            function playTicks() {
+                playTictacSound(false);
+                count++;
+                if (count < 30) {
+                    tickDelay += 10;
+                    setTimeout(playTicks, tickDelay);
+                }
+            }
+            playTicks();
+
+            setTimeout(() => {
+                // cubic-bezier(0.15, 0.85, 0.15, 1) para un frenado suave y elegante
+                track.style.transition = 'left 3s cubic-bezier(0.15, 0.85, 0.15, 1)';
+
+                // Fórmula de centrado milimétrico:
+                // Se posiciona a 50% y se resta el desplazamiento total hasta el centro de la carta seleccionada
+                const totalOffset = finalStopIndex * cardWidth + halfCardWidth;
+                track.style.left = `calc(50% - ${totalOffset}px)`;
+
+                setTimeout(() => {
+                    const card = document.getElementById(`spin-card-${finalStopIndex}`);
+                    if (card) {
+                        card.classList.add('selected');
+                    }
+
+                    playRetroSound('coin');
+                    if (onComplete) onComplete();
+                }, 3000);
+            }, 50);
+        }
+
+        function renderizarPantalla(state) {
+            const activeScreen = state.active_screen || 'start';
+            const jugadores = state.jugadores || [];
+            const scoreGoal = state.score_goal || 50;
+
+            // Transición de pantallas
+            if (activeScreen !== currentActiveScreen) {
+                document.querySelectorAll('.projector-screen').forEach(screen => {
+                    screen.classList.remove('active');
+                });
+                const nextScreen = document.getElementById(`screen-${activeScreen}`);
+                if (nextScreen) {
+                    nextScreen.classList.add('active');
+                }
+
+                if (activeScreen === 'winner') {
+                    playRetroSound('win');
+                    startConfetti();
+                } else {
+                    stopConfetti();
+                }
+
+                // Detener timers de otras pantallas
+                if (activeScreen !== 'game_ahoracaigo') {
+                    clearInterval(acTimerInterval);
+                    acIsActiveTimer = false;
+                }
+                if (activeScreen !== 'game_memorice') {
+                    clearInterval(memTimerInterval);
+                    memIsActiveTimer = false;
+                }
+
+                currentActiveScreen = activeScreen;
+            }
+
+            if (jugadores.length === 0) {
+                document.getElementById('podium-layout').innerHTML = '';
+                document.getElementById('scoreboard-items-list').innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: var(--color-text-muted);">
+                        SIN PARTICIPANTES
+                    </div>
+                `;
+                return;
+            }
+
+            const jugadoresOrdenados = [...jugadores].sort((a, b) => b.puntaje_total - a.puntaje_total);
+
+            // ──────────────────────────────────────────────
+            // 📊 SCOREBOARD
+            // ──────────────────────────────────────────────
+            if (activeScreen === 'scoreboard') {
+                const podiumContainer = document.getElementById('podium-layout');
+                const top1 = jugadoresOrdenados[0] || null;
+                const top2 = jugadoresOrdenados[1] || null;
+                const top3 = jugadoresOrdenados[2] || null;
+
+                let podiumHtml = '';
+                if (top2) {
+                    podiumHtml += `
+                        <div class="podium-place place-2">
+                            <span class="podium-avatar">${top2.emoji}</span>
+                            <span class="podium-score">${top2.puntaje_total} pts</span>
+                            <div class="podium-bar">2ND</div>
+                            <span class="podium-name">${top2.nombre}</span>
+                        </div>
+                    `;
+                }
+                if (top1) {
+                    podiumHtml += `
+                        <div class="podium-place place-1">
+                            <span class="podium-avatar">${top1.emoji}</span>
+                            <span class="podium-score">${top1.puntaje_total} pts</span>
+                            <div class="podium-bar">1ST</div>
+                            <span class="podium-name">${top1.nombre}</span>
+                        </div>
+                    `;
+                }
+                if (top3) {
+                    podiumHtml += `
+                        <div class="podium-place place-3">
+                            <span class="podium-avatar">${top3.emoji}</span>
+                            <span class="podium-score">${top3.puntaje_total} pts</span>
+                            <div class="podium-bar">3RD</div>
+                            <span class="podium-name">${top3.nombre}</span>
+                        </div>
+                    `;
+                }
+                podiumContainer.innerHTML = podiumHtml;
+
+                const listContainer = document.getElementById('scoreboard-items-list');
+                listContainer.innerHTML = jugadoresOrdenados.map((j, index) => {
+                    const pct = Math.min(100, Math.round((j.puntaje_total / scoreGoal) * 100));
+
+                    const jid = j.id;
+                    let animationClass = '';
+                    if (cachedScores[jid] !== undefined) {
+                        if (j.puntaje_total > cachedScores[jid]) {
+                            animationClass = 'flash-up';
+                            setTimeout(() => playRetroSound('coin'), 50);
+                        } else if (j.puntaje_total < cachedScores[jid]) {
+                            animationClass = 'flash-down';
+                            setTimeout(() => playRetroSound('hit'), 50);
+                        }
+                    }
+
+                    return `
+                        <div class="scoreboard-item ${animationClass}" id="player-row-${j.id}">
+                            <div style="flex: 1; display: flex; align-items: center; gap: 15px; min-width: 200px;">
+                                <span style="font-family: 'Press Start 2P', monospace; font-size: 0.9rem; color: var(--color-text-muted); width: 30px;">
+                                    #${index + 1}
+                                </span>
+                                <span style="font-size: 1.8rem;">${j.emoji}</span>
+                                <span style="font-family: 'Press Start 2P', monospace; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">
+                                    ${j.nombre}
+                                </span>
+                            </div>
+                            
+                            <div style="flex: 2; margin: 0 20px;" class="goal-bar-container">
+                                <div class="goal-progress-bg">
+                                    <div class="goal-progress-fill" style="width: ${pct}%"></div>
+                                    <span class="goal-progress-text">${pct}%</span>
+                                </div>
+                            </div>
+
+                            <div style="text-align: right; min-width: 120px;">
+                                <span style="font-family: 'Press Start 2P', monospace; font-size: 1.1rem; color: var(--color-warning);">
+                                    ${j.puntaje_total}
+                                </span>
+                                <span style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: var(--color-text-muted);">
+                                    PTS
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                jugadores.forEach(j => {
+                    setTimeout(() => {
+                        const row = document.getElementById(`player-row-${j.id}`);
+                        if (row) {
+                            row.classList.remove('flash-up');
+                            row.classList.remove('flash-down');
+                        }
+                    }, 1000);
+                });
+            }
+
+            // ──────────────────────────────────────────────
+            // 🏆 PODIO FINAL ARCADE (CELEBRACIÓN)
+            // ──────────────────────────────────────────────
+            if (activeScreen === 'winner') {
+                const top1 = jugadoresOrdenados[0] || null;
+                const top2 = jugadoresOrdenados[1] || null;
+                const top3 = jugadoresOrdenados[2] || null;
+
+                let podiumHtml = '';
+
+                // 2ND PLACE
+                if (top2) {
+                    podiumHtml += `
+                        <div class="podium-column second">
+                            <span class="podium-player-avatar">${top2.emoji}</span>
+                            <span class="podium-player-name">${top2.nombre.toUpperCase()}</span>
+                            <span class="podium-player-score">${top2.puntaje_total} PTS</span>
+                            <div class="podium-block">2ND</div>
+                        </div>
+                    `;
+                } else {
+                    podiumHtml += `<div class="podium-column second"><div style="height:115px;"></div></div>`;
+                }
+
+                // 1ST PLACE
+                if (top1) {
+                    podiumHtml += `
+                        <div class="podium-column first">
+                            <span class="podium-player-avatar" style="font-size: 3.5rem;">👑 ${top1.emoji}</span>
+                            <span class="podium-player-name" style="color: var(--color-warning); font-size: 0.8rem;">${top1.nombre.toUpperCase()}</span>
+                            <span class="podium-player-score" style="font-size: 0.75rem;">${top1.puntaje_total} PTS</span>
+                            <div class="podium-block">1ST</div>
+                        </div>
+                    `;
+                } else {
+                    podiumHtml += `<div class="podium-column first"><div style="height:160px;"></div></div>`;
+                }
+
+                // 3RD PLACE
+                if (top3) {
+                    podiumHtml += `
+                        <div class="podium-column third">
+                            <span class="podium-player-avatar">${top3.emoji}</span>
+                            <span class="podium-player-name">${top3.nombre.toUpperCase()}</span>
+                            <span class="podium-player-score">${top3.puntaje_total} PTS</span>
+                            <div class="podium-block">3RD</div>
+                        </div>
+                    `;
+                } else {
+                    podiumHtml += `<div class="podium-column third"><div style="height:80px;"></div></div>`;
+                }
+
+                document.getElementById('podium-arcade-layout').innerHTML = podiumHtml;
+            }
+
+            // ──────────────────────────────────────────────
+            // 🧩 JUEGO: MEMORICE DE PALABRAS (REDISEÑADO)
+            // ──────────────────────────────────────────────
+            if (activeScreen === 'game_memorice') {
+                const memoriceGrid = document.getElementById('memorice-grid-layout');
+                const words = state.memorice.words || [];
+                const status = state.memorice.status || 'idle';
+
+                const revealed = state.memorice.revealed_indices || [];
+                const errIdx = state.memorice.error_index;
+
+                // 1. Renderizar grilla de 9 casillas
+                memoriceGrid.innerHTML = words.map((word, idx) => {
+                    let cardClass = 'memorice-card';
+                    if (status === 'memorizing') {
+                        cardClass += ' temp-revealed';
+                    } else if (status === 'playing') {
+                        if (revealed.includes(idx)) {
+                            cardClass += ' revealed';
+                        } else if (errIdx === idx) {
+                            cardClass += ' error';
+                        }
+                    } else if (status === 'completed') {
+                        cardClass += ' revealed';
+                    }
+
+                    return `
+                        <div class="${cardClass}" id="mem-card-${idx}">
+                            <span class="card-number">${idx + 1}</span>
+                            <span class="card-word">${word}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                // 2. Play FX de error al cambiar
+                if (errIdx !== -1 && errIdx !== lastErrorIndex) {
+                    playRetroSound('hit');
+                }
+                lastErrorIndex = errIdx;
+
+                // 3. Sincronizar Subtítulo
+                const subtitle = document.getElementById('memorice-status-subtitle');
+                if (status === 'memorizing') {
+                    subtitle.innerText = '[ ¡MEMORIZA LAS CASILLAS! ]';
+                } else if (status === 'playing') {
+                    subtitle.innerText = '[ ¡ADIVINA LA CASILLA EN EL ORDEN CORRECTO! ]';
+                } else if (status === 'completed') {
+                    subtitle.innerText = '[ ¡FELICIDADES! ¡LOGRARON COMPLETAR EL MEMORICE! ]';
+                } else if (status === 'gameover') {
+                    subtitle.innerText = '[ ¡TIEMPO AGOTADO! JUEGO TERMINADO ]';
+                } else {
+                    subtitle.innerText = '[ ESPERANDO CONFIGURACIÓN DE RONDA... ]';
+                }
+
+                // 4. Temporizador Sincronizado de 70s
+                if (state.memorice.timer_active) {
+                    if (!memIsActiveTimer || memLastStartTime !== state.memorice.timer_start_time) {
+                        memIsActiveTimer = true;
+                        memLastStartTime = state.memorice.timer_start_time;
+                        startRedesignedMemTimer(state.memorice.timer_start_time);
+                    }
+                } else {
+                    clearInterval(memTimerInterval);
+                    memIsActiveTimer = false;
+
+                    const bar = document.getElementById('memorice-timer-fill');
+                    const text = document.getElementById('memorice-timer-text');
+
+                    if (status === "completed") {
+                        bar.style.width = "100%";
+                        bar.className = 'memorice-timer-bar';
+                        text.innerText = "COMPLETADO";
+                    } else if (status === "gameover") {
+                        bar.style.width = "0%";
+                        bar.className = 'memorice-timer-bar danger';
+                        text.innerText = "TIEMPO AGOTADO";
+                    } else {
+                        bar.style.width = "100%";
+                        bar.className = 'memorice-timer-bar';
+                        text.innerText = "70s";
+                    }
+                }
+
+                // 5. Panel de Turnos
+                const playersLayout = document.getElementById('memorice-players-layout');
+                const pids = state.memorice.players_ids || [];
+                const activePlayerIdx = state.memorice.active_player_index || 0;
+
+                if (pids.length > 0) {
+                    playersLayout.innerHTML = pids.map((pid, idx) => {
+                        const playerObj = state.jugadores.find(j => j.id === pid);
+                        if (!playerObj) return '';
+                        const isActive = idx === activePlayerIdx && status === 'playing';
+                        return `
+                            <div class="memorice-player-tag ${isActive ? 'active' : ''}">
+                                ${isActive ? '▶ ' : ''}${playerObj.emoji} ${playerObj.nombre.toUpperCase()}
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    playersLayout.innerHTML = `
+                        <div style="font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: var(--color-text-muted);">
+                            SIN INTEGRANTES CONFIGURADOS
+                        </div>
+                    `;
+                }
+
+                // 6. Overlays de estado
+                const overlay = document.getElementById('memorice-overlay');
+                const overlayText = document.getElementById('memorice-overlay-text');
+                if (status === 'completed') {
+                    overlay.style.display = 'block';
+                    overlayText.innerText = '🔥 ¡VICTORIA! COMPLETO 🔥';
+                    overlayText.style.color = 'var(--color-success)';
+                } else if (status === 'gameover') {
+                    overlay.style.display = 'block';
+                    overlayText.innerText = '❌ ¡GAME OVER! ❌';
+                    overlayText.style.color = 'var(--color-danger)';
+                } else {
+                    overlay.style.display = 'none';
+                }
+            }
+
+            // ──────────────────────────────────────────────
+            // 🎵 JUEGO: PISTA MUSICAL
+            // ──────────────────────────────────────────────
+            if (activeScreen === 'game_music') {
+                const cluesLayout = document.getElementById('music-clues-layout');
+                const clues = state.music.clues || [];
+                const revealedLevel = state.music.revealed_level || 0;
+                const audioUrl = state.music.audio_url || "";
+
+                const audioEl = document.getElementById('music-audio-element');
+                if (audioUrl) {
+                    const fullUrl = window.location.origin + audioUrl;
+                    if (audioEl.src !== fullUrl && !audioEl.src.endsWith(audioUrl)) {
+                        audioEl.src = audioUrl;
+                        audioEl.load();
+                    }
+                } else {
+                    audioEl.src = "";
+                }
+
+                for (let l = 1; l <= 5; l++) {
+                    const led = document.getElementById(`led-${l}`);
+                    if (led) {
+                        led.className = 'led-light';
+                        if (revealedLevel >= l) {
+                            led.classList.add(`active-${l}`);
+                        }
+                    }
+                }
+
+                cluesLayout.innerHTML = clues.map((clue, idx) => {
+                    const levelRequired = idx + 1;
+                    const isRevealed = revealedLevel >= levelRequired;
+                    let clueText = isRevealed ? clue : "[ PISTA BLOQUEADA ]";
+                    return `
+                        <div class="music-clue-item ${isRevealed ? 'revealed' : ''}">
+                            <span class="music-clue-number">PISTA ${levelRequired} (${60 - (levelRequired * 10)} PTS)</span>
+                            <span class="music-clue-text">${clueText}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                if (revealedLevel === 1 && lastRevealedLevel !== 1) {
+                    reproduceUnSegundoAudio();
+                }
+
+                if (revealedLevel === 0) {
+                    document.getElementById('spool-left').className = 'spool';
+                    document.getElementById('spool-right').className = 'spool';
+                }
+
+                lastRevealedLevel = revealedLevel;
+            }
+
+            // ──────────────────────────────────────────────
+            // ⏳ JUEGO: AHORA CAIGO
+            // ──────────────────────────────────────────────
+            if (activeScreen === 'game_ahoracaigo') {
+                const ac = state.ahoracaigo;
+
+                const playerA = state.jugadores.find(j => j.id === ac.player_a_id);
+                const playerB = state.jugadores.find(j => j.id === ac.player_b_id);
+
+                const boxA = document.getElementById('ac-player-a-box');
+                const boxB = document.getElementById('ac-player-b-box');
+
+                boxA.innerText = playerA ? `${playerA.emoji} ${playerA.nombre}` : "JUGADOR A";
+                boxB.innerText = playerB ? `${playerB.emoji} ${playerB.nombre}` : "JUGADOR B";
+
+                boxA.className = 'versus-player';
+                boxB.className = 'versus-player';
+                if (ac.active_player_id) {
+                    if (ac.active_player_id === ac.player_a_id) boxA.classList.add('active');
+                    if (ac.active_player_id === ac.player_b_id) boxB.classList.add('active');
+                }
+
+                document.getElementById('ac-definition-text').innerText = ac.definition || "CARGANDO CONCEPTO...";
+
+                const wordLayout = document.getElementById('ac-word-layout');
+                const displayChars = (ac.displayed_word || "").split(" ");
+                wordLayout.innerHTML = displayChars.map(char => {
+                    if (char === "") {
+                        return '';
+                    } else if (char === " ") {
+                        return `<div class="letter-box empty" style="border:none;box-shadow:none;">&nbsp;</div>`;
+                    } else if (char === "_") {
+                        return `<div class="letter-box empty">&nbsp;</div>`;
+                    } else {
+                        return `<div class="letter-box">${char}</div>`;
+                    }
+                }).join("");
+
+                if (ac.timer_active) {
+                    if (!acIsActiveTimer || acLastStartTime !== ac.timer_start_time) {
+                        acIsActiveTimer = true;
+                        acLastStartTime = ac.timer_start_time;
+                        startAhoraCaigoTimer(ac.timer_start_time);
+                    }
+                } else {
+                    clearInterval(acTimerInterval);
+                    acIsActiveTimer = false;
+
+                    const bar = document.getElementById('ac-timer-bar-fill');
+                    const text = document.getElementById('ac-timer-text');
+
+                    if (ac.status === "correct") {
+                        bar.style.width = "100%";
+                        bar.className = 'timer-30s-bar';
+                        text.innerText = "¡RESPUESTA CORRECTA!";
+                    } else if (ac.status === "timeout") {
+                        bar.style.width = "0%";
+                        bar.className = 'timer-30s-bar danger';
+                        text.innerText = "¡TIEMPO AGOTADO!";
+                    } else {
+                        bar.style.width = "100%";
+                        bar.className = 'timer-30s-bar';
+                        text.innerText = "30s";
+                    }
+                }
+
+                const overlay = document.getElementById('ac-status-overlay');
+                const overlayText = document.getElementById('ac-status-text');
+
+                if (ac.status === "correct") {
+                    overlay.style.display = "block";
+                    overlayText.innerText = `¡CORRECTO! (+${ac.points_awarded} PTS)`;
+                    overlayText.style.color = "var(--color-success)";
+                } else if (ac.status === "timeout") {
+                    overlay.style.display = "block";
+                    overlayText.innerText = "¡TIEMPO AGOTADO!";
+                    overlayText.style.color = "var(--color-danger)";
+                } else {
+                    overlay.style.display = "none";
+                }
+            }
+
+            // ──────────────────────────────────────────────
+            // 🎡 JUEGO: LA RULETA ROMPEHIELO
+            // ──────────────────────────────────────────────
+            if (activeScreen === 'game_ruleta') {
+                const ru = state.ruleta;
+                const track = document.getElementById('ruleta-track');
+                const questionCard = document.getElementById('ruleta-question-card');
+
+                const spinTrigger = ru.spin_trigger || 0;
+                if (spinTrigger > ruLastSpinTrigger) {
+                    ruLastSpinTrigger = spinTrigger;
+                    ruIsSpinning = true;
+                    animarGiroRuleta(state, () => {
+                        ruIsSpinning = false;
+                        if (state.ruleta.status === "selected" || state.ruleta.status === "answered") {
+                            mostrarPreguntaRuleta(state);
+                        }
+                    });
+                }
+
+                if (!ruIsSpinning) {
+                    if (ru.selected_player_id) {
+                        if (track.innerHTML === "") {
+                            const selPlayer = state.jugadores.find(j => j.id === ru.selected_player_id);
+                            if (selPlayer) {
+                                track.innerHTML = `
+                                    <div class="spinner-card selected">
+                                        <span style="font-size: 2.2rem;">${selPlayer.emoji}</span>
+                                        <span style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: #fff;">
+                                            ${selPlayer.nombre.toUpperCase()}
+                                        </span>
+                                    </div>
+                                `;
+                                track.style.transition = 'none';
+                                track.style.left = '50%';
+                                track.style.transform = 'translateX(-50%)';
+                            }
+                        }
+
+                        if (ru.status === "selected" || ru.status === "answered") {
+                            mostrarPreguntaRuleta(state);
+                        } else {
+                            questionCard.style.display = "none";
+                        }
+                    } else {
+                        track.innerHTML = `
+                            <div style="font-family: 'Press Start 2P', monospace; font-size: 0.8rem; color: var(--color-text-muted);">
+                                ESPERANDO GIRO...
+                            </div>
+                        `;
+                        track.style.left = '50%';
+                        track.style.transform = 'translateX(-50%)';
+                        questionCard.style.display = "none";
+                    }
+                }
+            }
+
+            // ──────────────────────────────────────────────
+            // 🤷 JUEGO: ¿QUIÉN ES MÁS PROBABLE QUE...?
+            // ──────────────────────────────────────────────
+            if (activeScreen === 'game_probable') {
+                const pr = state.probable;
+                document.getElementById('probable-question-prompt').innerText = pr.question || "¿Quién es más probable...?";
+
+                const gridLayout = document.getElementById('probable-players-grid-layout');
+                const winners = pr.winners_ids || [];
+
+                gridLayout.innerHTML = state.jugadores.map(j => {
+                    const isWinner = winners.includes(j.id);
+                    return `
+                        <div class="probable-player-card ${isWinner ? 'winner' : ''}">
+                            ${isWinner ? '<span class="winner-crown">👑</span>' : ''}
+                            <span style="font-size: 2.5rem;">${j.emoji}</span>
+                            <span style="font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: #fff; margin-top: 5px;">
+                                ${j.nombre.toUpperCase()}
+                            </span>
+                            <span style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: var(--color-warning); margin-top: 5px;">
+                                ${j.puntaje_total} PTS
+                            </span>
+                        </div>
+                    `;
+                }).join('');
+
+                if (winners.length > 0) {
+                    playRetroSound('coin');
+                }
+            }
+
+            // Actualizar caché de puntajes
+            jugadores.forEach(j => {
+                cachedScores[j.id] = j.puntaje_total;
+            });
+        }
+
+        // Mostrar tarjeta de pregunta en la ruleta
+        function mostrarPreguntaRuleta(state) {
+            const card = document.getElementById('ruleta-question-card');
+            const title = document.getElementById('ruleta-card-title');
+            const text = document.getElementById('ruleta-card-text');
+
+            const level = state.ruleta.level || "verde";
+            card.className = `card-question level-${level}`;
+
+            title.innerText = `PREGUNTA NIVEL ${level.toUpperCase()} (+${state.ruleta.points} PTS)`;
+            text.innerText = state.ruleta.question;
+
+            card.style.display = "block";
+        }
+
+        // Conectar SSE Stream
+        function iniciarSSE() {
+            const evtSource = new EventSource("/api/stream");
+
+            evtSource.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                renderizarPantalla(data);
+            };
+
+            evtSource.onerror = function () {
+                console.log("Error en la conexión SSE. Reintentando...");
+            };
+        }
+
+        // Cargar estado inicial al arrancar
+        async function cargarEstadoInicial() {
+            try {
+                const response = await fetch('/api/estado');
+                const data = await response.json();
+                renderizarPantalla(data);
+            } catch (err) {
+                console.error("Error cargando estado inicial:", err);
+            }
+        }
+
+        // Inicializar
+        cargarEstadoInicial();
+        iniciarSSE();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1147 @@
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Press+Start+2P&display=swap');
+
+:root {
+  --color-bg: #0d0e15;
+  --color-panel: #1b1c26;
+  --color-border: #ffffff;
+  --color-border-grey: #3a3d52;
+  --color-success: #00ff66;
+  --color-danger: #ff0055;
+  --color-warning: #ffcc00;
+  --color-info: #00f3ff;
+  --color-text: #ffffff;
+  --color-text-muted: #8e95b3;
+  --shadow-color: #000000;
+}
+
+/* Reset y configuraciones generales */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  user-select: none;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Courier Prime', 'CourierNew', Courier, monospace;
+  overflow-x: hidden;
+  padding: 20px;
+}
+
+/* Tipografías */
+h1, h2, h3, h4, h5, h6, .arcade-font {
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  line-height: 1.4;
+  letter-spacing: 1px;
+}
+
+/* Efecto Parpadeo */
+@keyframes arcade-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.pixel-blink {
+  animation: arcade-blink 0.8s infinite;
+}
+
+/* Contenedores Retro 8-Bits (Paneles) */
+.pixel-panel {
+  background-color: var(--color-panel);
+  border: 4px solid var(--color-border);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.pixel-panel-grey {
+  background-color: var(--color-panel);
+  border: 4px solid var(--color-border-grey);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.pixel-panel.accent-cyan { border-color: var(--color-info); }
+.pixel-panel.accent-green { border-color: var(--color-success); }
+.pixel-panel.accent-yellow { border-color: var(--color-warning); }
+.pixel-panel.accent-magenta { border-color: var(--color-danger); }
+
+/* Título de Panel estilo Retro */
+.panel-title {
+  display: inline-block;
+  background-color: var(--color-bg);
+  padding: 2px 10px;
+  margin-top: -35px;
+  margin-left: -5px;
+  margin-bottom: 20px;
+  font-size: 0.8rem;
+  border: 4px solid inherit;
+  text-transform: uppercase;
+}
+
+/* Botones Retro Pixel */
+.pixel-btn {
+  display: inline-block;
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  font-size: 0.75rem;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 4px solid var(--color-border);
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  padding: 10px 16px;
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+  text-align: center;
+  transition: none; /* Inversión de color instantánea sin transiciones */
+}
+
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+.pixel-btn:hover {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+}
+
+/* Modificadores de Botón */
+.pixel-btn-success {
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+.pixel-btn-success:hover {
+  background-color: var(--color-success);
+  color: var(--color-bg);
+}
+
+.pixel-btn-danger {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+.pixel-btn-danger:hover {
+  background-color: var(--color-danger);
+  color: var(--color-bg);
+}
+
+.pixel-btn-warning {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+.pixel-btn-warning:hover {
+  background-color: var(--color-warning);
+  color: var(--color-bg);
+}
+
+.pixel-btn-info {
+  border-color: var(--color-info);
+  color: var(--color-info);
+}
+.pixel-btn-info:hover {
+  background-color: var(--color-info);
+  color: var(--color-bg);
+}
+
+.pixel-btn-grey {
+  border-color: var(--color-border-grey);
+  color: var(--color-border-grey);
+}
+.pixel-btn-grey:hover {
+  background-color: var(--color-border-grey);
+  color: var(--color-bg);
+}
+
+/* Form Inputs Retro */
+.pixel-input {
+  display: block;
+  width: 100%;
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  font-size: 0.8rem;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 4px solid var(--color-border-grey);
+  padding: 10px;
+  outline: none;
+  margin-bottom: 15px;
+}
+
+.pixel-input:focus {
+  border-color: var(--color-info);
+}
+
+/* Scoreboard Table / List */
+.scoreboard-list {
+  list-style: none;
+}
+
+.scoreboard-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 4px solid var(--color-border-grey);
+  font-size: 1.2rem;
+  background-color: var(--color-panel);
+}
+
+.scoreboard-item:last-child {
+  border-bottom: none;
+}
+
+/* Efecto Flash para puntuación */
+@keyframes score-up-flash {
+  0% { background-color: var(--color-warning); color: #000; }
+  50% { background-color: var(--color-warning); color: #000; }
+  100% { background-color: var(--color-panel); color: var(--color-text); }
+}
+
+@keyframes score-down-flash {
+  0% { background-color: var(--color-danger); color: #fff; }
+  50% { background-color: var(--color-danger); color: #fff; }
+  100% { background-color: var(--color-panel); color: var(--color-text); }
+}
+
+.flash-up {
+  animation: score-up-flash 0.8s ease-out;
+}
+
+.flash-down {
+  animation: score-down-flash 0.8s ease-out;
+}
+
+/* Selectores de Emoji */
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.emoji-option {
+  font-size: 1.5rem;
+  padding: 8px;
+  border: 4px solid var(--color-border-grey);
+  background-color: var(--color-bg);
+  text-align: center;
+  cursor: pointer;
+}
+
+.emoji-option.selected {
+  border-color: var(--color-warning);
+  background-color: var(--color-panel);
+}
+
+/* Grid Layout */
+.app-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .app-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Proyector layout */
+.projector-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+.projector-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.projector-title {
+  font-size: 2.2rem;
+  color: var(--color-info);
+  text-shadow: 4px 4px 0px var(--shadow-color);
+  margin-bottom: 10px;
+}
+
+.projector-subtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+}
+
+/* Podio Retro (Rankings) */
+.podium-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 40px;
+  height: 250px;
+  padding-bottom: 10px;
+  border-bottom: 4px dashed var(--color-border-grey);
+}
+
+.podium-place {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 140px;
+}
+
+.podium-avatar {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  animation: bounce 1.5s infinite alternate;
+}
+
+.podium-score {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1rem;
+  color: var(--color-warning);
+  margin-bottom: 10px;
+}
+
+.podium-bar {
+  width: 100%;
+  border: 4px solid var(--color-border);
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.2rem;
+}
+
+.place-1 .podium-bar {
+  height: 140px;
+  background-color: var(--color-warning);
+  color: var(--color-bg);
+  border-color: #ffffff;
+}
+
+.place-2 .podium-bar {
+  height: 100px;
+  background-color: var(--color-info);
+  color: var(--color-bg);
+}
+
+.place-3 .podium-bar {
+  height: 70px;
+  background-color: var(--color-success);
+  color: var(--color-bg);
+}
+
+.podium-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.75rem;
+  margin-top: 10px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-12px); }
+}
+
+/* Barra de progreso de Meta */
+.goal-bar-container {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.goal-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.goal-progress-bg {
+  height: 24px;
+  border: 4px solid var(--color-border-grey);
+  background-color: var(--color-bg);
+  position: relative;
+}
+
+.goal-progress-fill {
+  height: 100%;
+  background-color: var(--color-success);
+  transition: width 0.4s steps(10); /* Movimiento retro por pasos */
+}
+
+.goal-progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* Pantallas del Proyector */
+.projector-screen {
+  display: none;
+}
+
+.projector-screen.active {
+  display: block;
+}
+
+/* Pantalla de Inicio Especial */
+.screen-start-content {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.logo-big {
+  font-size: 3rem;
+  color: var(--color-warning);
+  text-shadow: 6px 6px 0px #000;
+  margin-bottom: 60px;
+}
+
+.press-start-txt {
+  font-size: 1.5rem;
+  color: var(--color-success);
+  text-shadow: 3px 3px 0px #000;
+  margin-top: 40px;
+}
+
+/* Pantalla de Ganador Especial */
+.winner-screen-content {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.winner-banner {
+  font-size: 2.2rem;
+  color: var(--color-warning);
+  text-shadow: 4px 4px 0px #000;
+  margin-bottom: 30px;
+  animation: arcade-blink 0.5s infinite;
+}
+
+.winner-avatar {
+  font-size: 6rem;
+  margin: 30px 0;
+  animation: win-jump 0.6s infinite alternate ease-in-out;
+  display: inline-block;
+}
+
+.winner-name {
+  font-size: 2rem;
+  color: var(--color-info);
+  margin-bottom: 20px;
+}
+
+.winner-score {
+  font-size: 1.5rem;
+  color: var(--color-success);
+}
+
+@keyframes win-jump {
+  from { transform: translateY(0) scaleY(1); }
+  to { transform: translateY(-30px) scaleY(0.95); }
+}
+
+/* ──────────────────────────────────────────────
+   🎮 ESTILOS ESPECÍFICOS DE MINI-JUEGOS
+   ────────────────────────────────────────────── */
+
+/* --- JUEGO MEMORICE DE PALABRAS --- */
+.memorice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  max-width: 700px;
+  margin: 30px auto;
+}
+
+@media (max-width: 768px) {
+  .memorice-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.memorice-card {
+  height: 130px;
+  background-color: var(--color-panel);
+  border: 4px solid var(--color-border);
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Press Start 2P', monospace;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: transform 0.1s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.memorice-card .card-number {
+  font-size: 2.2rem;
+  color: var(--color-info);
+}
+
+.memorice-card .card-word {
+  display: none;
+  font-size: 0.9rem;
+  color: var(--color-warning);
+  text-align: center;
+  word-break: break-all;
+  padding: 5px;
+  text-shadow: 2px 2px 0px #000;
+}
+
+/* Efecto de mostrar palabras */
+.memorice-card.revealed .card-number {
+  display: none;
+}
+.memorice-card.revealed .card-word {
+  display: block;
+}
+
+.memorice-card.revealed {
+  border-color: var(--color-success);
+  background-color: #123d1d; /* Verde para acierto permanente */
+}
+
+.memorice-card.temp-revealed {
+  border-color: var(--color-warning);
+  background-color: #212431; /* Revelado temporal al inicio */
+}
+
+.memorice-card.temp-revealed .card-number {
+  display: none;
+}
+.memorice-card.temp-revealed .card-word {
+  display: block;
+}
+
+/* Error de tarjeta */
+.memorice-card.error {
+  border-color: var(--color-danger);
+  background-color: #3d1219; /* Rojo para error */
+  animation: arcade-shake 0.4s ease-in-out;
+}
+
+.memorice-card.error .card-number {
+  display: none;
+}
+.memorice-card.error .card-word {
+  display: block;
+  color: var(--color-danger);
+}
+
+@keyframes arcade-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+/* Barra de temporizador Memorice (70s) */
+.memorice-timer-container {
+  max-width: 700px;
+  margin: 20px auto;
+  border: 4px solid var(--color-border);
+  background-color: var(--color-bg);
+  height: 26px;
+  position: relative;
+  box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.memorice-timer-bar {
+  height: 100%;
+  background-color: var(--color-success);
+  width: 100%;
+  transition: width 0.1s linear, background-color 0.5s ease;
+}
+
+.memorice-timer-bar.warning {
+  background-color: var(--color-warning);
+}
+
+.memorice-timer-bar.danger {
+  background-color: var(--color-danger);
+}
+
+.memorice-timer-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  z-index: 5;
+}
+
+/* Panel de turnos de jugadores de Memorice */
+.memorice-players-panel {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.memorice-player-tag {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.75rem;
+  padding: 10px 20px;
+  border: 4px solid var(--color-border-grey);
+  background-color: var(--color-panel);
+  color: var(--color-text-muted);
+  box-shadow: 4px 4px 0 var(--shadow-color);
+}
+
+.memorice-player-tag.active {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+  box-shadow: 4px 4px 0 var(--shadow-color), 0 0 15px rgba(255, 204, 0, 0.4);
+  animation: arcade-blink 0.8s infinite alternate;
+}
+
+/* --- JUEGO DE LA PISTA MUSICAL --- */
+.cassette-player {
+  background-color: #222533;
+  border: 6px solid var(--color-border);
+  box-shadow: 8px 8px 0px var(--shadow-color);
+  max-width: 650px;
+  margin: 30px auto;
+  padding: 25px;
+  position: relative;
+}
+
+.cassette-label {
+  background-color: var(--color-info);
+  border: 4px solid #000;
+  padding: 10px;
+  color: #000;
+  text-align: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  margin-bottom: 25px;
+  position: relative;
+  text-shadow: none;
+}
+
+.cassette-window {
+  background-color: #0d0e15;
+  border: 4px solid var(--color-border-grey);
+  height: 90px;
+  margin: 0 auto 25px auto;
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+}
+
+.spool {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 5px dashed var(--color-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.spool::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-border-grey);
+  border-radius: 50%;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spool.spinning {
+  animation: spin 1.5s infinite linear;
+}
+
+/* Indicadores LED */
+.led-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.led-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.led-light {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #000;
+  background-color: #333;
+}
+
+.led-light.active-1 { background-color: var(--color-success); box-shadow: 0 0 10px var(--color-success); }
+.led-light.active-2 { background-color: var(--color-info); box-shadow: 0 0 10px var(--color-info); }
+.led-light.active-3 { background-color: var(--color-warning); box-shadow: 0 0 10px var(--color-warning); }
+.led-light.active-4 { background-color: var(--color-info); box-shadow: 0 0 10px var(--color-info); }
+.led-light.active-5 { background-color: var(--color-danger); box-shadow: 0 0 10px var(--color-danger); }
+
+.led-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
+  color: var(--color-text-muted);
+}
+
+/* Caja de Pistas de Texto */
+.music-clues-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.music-clue-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px;
+  border: 4px solid var(--color-border-grey);
+  margin-bottom: 12px;
+  background-color: var(--color-panel);
+  opacity: 0.25;
+}
+
+.music-clue-item.revealed {
+  opacity: 1;
+  border-color: var(--color-border);
+}
+
+.music-clue-number {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  color: var(--color-info);
+  margin-right: 15px;
+  padding-top: 2px;
+  white-space: nowrap;
+}
+
+.music-clue-text {
+  font-size: 1.1rem;
+  color: #fff;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Pestañas Admin (Tab system) */
+.admin-tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 20px;
+  border-bottom: 4px solid var(--color-border-grey);
+}
+
+.admin-tab-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  padding: 10px 14px;
+  cursor: pointer;
+  background-color: var(--color-panel);
+  border: 4px solid var(--color-border-grey);
+  border-bottom: none;
+  color: var(--color-text-muted);
+  outline: none;
+}
+
+.admin-tab-btn.active {
+  background-color: var(--color-bg);
+  border-color: var(--color-border);
+  color: var(--color-warning);
+  position: relative;
+  z-index: 2;
+}
+
+.admin-tab-content {
+  display: none;
+}
+
+.admin-tab-content.active {
+  display: block;
+}
+
+/* ──────────────────────────────────────────────
+   🎮 ESTILOS ESPECÍFICOS DE AHORA CAIGO Y RULETA
+   ────────────────────────────────────────────── */
+
+/* --- JUEGO: AHORA CAIGO --- */
+.versus-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.versus-player {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.95rem;
+  border: 4px solid var(--color-border-grey);
+  padding: 12px 24px;
+  background-color: var(--color-panel);
+  min-width: 240px;
+  text-align: center;
+  box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.versus-player.active {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+  box-shadow: 4px 4px 0px var(--shadow-color), 0 0 15px rgba(255, 204, 0, 0.4);
+}
+
+.versus-vs {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.6rem;
+  color: var(--color-danger);
+  animation: arcade-blink 0.5s infinite;
+  text-shadow: 3px 3px 0px #000;
+}
+
+.masked-word-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 35px auto;
+  max-width: 950px;
+}
+
+.letter-box {
+  width: 55px;
+  height: 65px;
+  border: 4px solid var(--color-border);
+  background-color: var(--color-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 2.2rem;
+  color: var(--color-warning);
+  box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.letter-box.empty {
+  border-color: var(--color-border-grey);
+  background-color: #151622;
+}
+
+.timer-30s-container {
+  max-width: 700px;
+  margin: 25px auto;
+  border: 4px solid var(--color-border);
+  background-color: var(--color-bg);
+  height: 30px;
+  position: relative;
+  box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.timer-30s-bar {
+  height: 100%;
+  background-color: var(--color-success);
+  width: 100%;
+  transition: width 0.1s linear, background-color 0.5s ease;
+}
+
+.timer-30s-bar.warning {
+  background-color: var(--color-warning);
+}
+
+.timer-30s-bar.danger {
+  background-color: var(--color-danger);
+}
+
+.timer-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.85rem;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* --- JUEGO: LA RULETA ROMPEHIELO --- */
+.ruleta-spinner-container {
+  max-width: 650px;
+  margin: 35px auto;
+  border: 6px solid var(--color-border);
+  box-shadow: 8px 8px 0 var(--shadow-color);
+  height: 150px;
+  background-color: #171822;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ruleta-spinner-track {
+  display: flex;
+  gap: 15px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.15s ease-out;
+}
+
+.spinner-card {
+  width: 130px;
+  height: 110px;
+  border: 4px solid var(--color-border-grey);
+  background-color: var(--color-panel);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  box-shadow: 4px 4px 0 var(--shadow-color);
+}
+
+.spinner-card.selected {
+  border-color: var(--color-warning);
+  box-shadow: 4px 4px 0 var(--shadow-color), inset 0 0 15px rgba(255, 204, 0, 0.5);
+  transform: scale(1.08);
+}
+
+.spinner-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background-color: var(--color-danger);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  box-shadow: 0 0 10px var(--color-danger);
+}
+
+.card-question {
+  max-width: 750px;
+  margin: 35px auto;
+  padding: 35px;
+  border: 6px solid var(--color-border);
+  box-shadow: 8px 8px 0px var(--shadow-color);
+  text-align: center;
+  background-color: var(--color-panel);
+}
+
+.card-question.level-verde { border-color: var(--color-success); }
+.card-question.level-amarillo { border-color: var(--color-warning); }
+.card-question.level-rojo { border-color: var(--color-danger); }
+
+.card-question-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0px #000;
+}
+.card-question.level-verde .card-question-title { color: var(--color-success); }
+.card-question.level-amarillo .card-question-title { color: var(--color-warning); }
+.card-question.level-rojo .card-question-title { color: var(--color-danger); }
+
+.card-question-text {
+  font-size: 1.35rem;
+  line-height: 1.6;
+  color: #fff;
+}
+
+/* ──────────────────────────────────────────────
+   🎮 ESTILOS ESPECÍFICOS DE PROBABLE Y PODIO FINAL
+   ────────────────────────────────────────────── */
+
+/* --- JUEGO: ¿QUIÉN ES MÁS PROBABLE QUE...? --- */
+.probable-question-card {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 30px;
+  border: 6px solid var(--color-border);
+  box-shadow: 8px 8px 0 var(--shadow-color);
+  text-align: center;
+  background-color: var(--color-panel);
+}
+
+.probable-question-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: var(--color-warning);
+  text-shadow: 2px 2px 0 #000;
+}
+
+.probable-players-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  max-width: 900px;
+  margin: 30px auto;
+}
+
+.probable-player-card {
+  width: 160px;
+  border: 4px solid var(--color-border-grey);
+  background-color: var(--color-panel);
+  padding: 15px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  box-shadow: 4px 4px 0 var(--shadow-color);
+}
+
+.probable-player-card.winner {
+  border-color: var(--color-warning);
+  box-shadow: 4px 4px 0 var(--shadow-color), 0 0 15px rgba(255, 204, 0, 0.4);
+}
+
+.probable-player-card .winner-crown {
+  position: absolute;
+  top: -20px;
+  font-size: 1.8rem;
+  animation: bounce 0.6s infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+
+/* --- PODIO ARCADE FINAL (FIN DE FIESTA) --- */
+.podium-arcade {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 30px;
+  margin: 50px auto 30px auto;
+  max-width: 750px;
+  height: 320px;
+}
+
+.podium-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 170px;
+}
+
+.podium-block {
+  width: 100%;
+  border: 4px solid var(--color-border);
+  box-shadow: 6px 6px 0 var(--shadow-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.8rem;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  position: relative;
+}
+
+/* Bloque 1er Lugar (Oro) */
+.podium-column.first .podium-block {
+  height: 160px;
+  background-color: #ffcc00; /* Oro */
+  border-color: #ffffff;
+  box-shadow: 6px 6px 0 var(--shadow-color), 0 0 15px rgba(255, 204, 0, 0.4);
+}
+
+/* Bloque 2do Lugar (Plata) */
+.podium-column.second .podium-block {
+  height: 115px;
+  background-color: #a0a0a0; /* Plata */
+}
+
+/* Bloque 3er Lugar (Bronce) */
+.podium-column.third .podium-block {
+  height: 80px;
+  background-color: #cd7f32; /* Bronce */
+}
+
+.podium-player-avatar {
+  font-size: 2.8rem;
+  margin-bottom: 8px;
+}
+
+.podium-player-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  margin-top: 10px;
+  text-align: center;
+  word-break: break-word;
+  color: #fff;
+}
+
+.podium-player-score {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.65rem;
+  color: var(--color-warning);
+  margin-top: 6px;
+}
+
+.admin-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 3px solid var(--color-border-grey);
+  background-color: var(--color-bg);
+}
+
+.admin-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.admin-checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--color-warning);
+}
+
+
+

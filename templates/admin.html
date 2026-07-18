@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UJuntita - Panel de Control Arcade</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div style="max-width: 1000px; margin: 0 auto; padding-bottom: 50px;">
+        
+        <!-- CABECERA -->
+        <div class="pixel-panel accent-yellow" style="text-align: center; margin-bottom: 30px;">
+            <h1 style="font-size: 1.8rem; color: var(--color-warning); text-shadow: 3px 3px 0 #000;">
+                UJUNTITA CONTROL PANEL
+            </h1>
+            <p style="margin-top: 10px; color: var(--color-text-muted); font-size: 0.9rem;">
+                [ OPERADOR DE PANTALLA ARCADE ]
+            </p>
+        </div>
+
+        <!-- PESTAÑAS NAVEGACIÓN ARCADE -->
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" onclick="switchTab('scoreboard', this)">📊 SCOREBOARD</button>
+            <button class="admin-tab-btn" onclick="switchTab('memorice', this)">🧩 MEMORICE</button>
+            <button class="admin-tab-btn" onclick="switchTab('music', this)">🎵 PISTA MUSICAL</button>
+            <button class="admin-tab-btn" onclick="switchTab('ahoracaigo', this)">⏳ AHORA CAIGO</button>
+            <button class="admin-tab-btn" onclick="switchTab('ruleta', this)">🎡 LA RULETA</button>
+            <button class="admin-tab-btn" onclick="switchTab('probable', this)">🤷 PROBABLE QUE</button>
+        </div>
+
+        <!-- CONTENIDO DE PESTAÑA: SCOREBOARD -->
+        <div id="tab-scoreboard" class="admin-tab-content active">
+            <div class="app-grid">
+                
+                <!-- COLUMNA IZQUIERDA: AGREGAR Y CONFIGURACIÓN -->
+                <div>
+                    <!-- REGISTRO JUGADORES -->
+                    <div class="pixel-panel">
+                        <div class="panel-title" style="color: var(--color-info);">NUEVO JUGADOR</div>
+                        <form id="add-player-form" onsubmit="agregarJugador(event)">
+                            <label style="display: block; margin-bottom: 8px; font-family: 'Press Start 2P', monospace; font-size: 0.7rem;">
+                                NOMBRE / EQUIPO:
+                            </label>
+                            <input type="text" id="player-name" class="pixel-input" placeholder="INGRESA NOMBRE..." required autocomplete="off">
+                            
+                            <label style="display: block; margin-bottom: 8px; font-family: 'Press Start 2P', monospace; font-size: 0.7rem;">
+                                AVATAR ARCADE:
+                            </label>
+                            <div class="emoji-grid" id="emoji-selector">
+                                <div class="emoji-option selected" onclick="selectEmoji('👾', this)">👾</div>
+                                <div class="emoji-option" onclick="selectEmoji('🕹️', this)">🕹️</div>
+                                <div class="emoji-option" onclick="selectEmoji('🚀', this)">🚀</div>
+                                <div class="emoji-option" onclick="selectEmoji('🎮', this)">🎮</div>
+                                <div class="emoji-option" onclick="selectEmoji('👽', this)">👽</div>
+                                <div class="emoji-option" onclick="selectEmoji('🤖', this)">🤖</div>
+                                <div class="emoji-option" onclick="selectEmoji('🦖', this)">🦖</div>
+                                <div class="emoji-option" onclick="selectEmoji('👑', this)">👑</div>
+                                <div class="emoji-option" onclick="selectEmoji('🍕', this)">🍕</div>
+                                <div class="emoji-option" onclick="selectEmoji('🦄', this)">🦄</div>
+                                <div class="emoji-option" onclick="selectEmoji('🐱', this)">🐱</div>
+                                <div class="emoji-option" onclick="selectEmoji('🔥', this)">🔥</div>
+                            </div>
+
+                            <button type="submit" class="pixel-btn pixel-btn-success" style="width: 100%; margin-top: 10px;">
+                                INSERT COIN (ADD)
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- CONTROL DE PANTALLA Y SESIÓN -->
+                    <div class="pixel-panel accent-cyan">
+                        <div class="panel-title" style="color: var(--color-info);">MIGRACION DE PANTALLAS</div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 12px; font-family: 'Press Start 2P', monospace; font-size: 0.7rem;">
+                                PANTALLA ACTIVA EN PROYECTOR:
+                            </label>
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <button onclick="cambiarPantalla('start')" id="btn-screen-start" class="pixel-btn" style="text-align: left;">
+                                    🕹️ PANTALLA DE INICIO (START)
+                                </button>
+                                <button onclick="cambiarPantalla('scoreboard')" id="btn-screen-scoreboard" class="pixel-btn" style="text-align: left;">
+                                    📊 TABLA DE PUNTUACIONES
+                                </button>
+                                
+                                <button onclick="cambiarPantalla('winner')" id="btn-screen-winner" class="pixel-btn pixel-btn-danger" style="text-align: left; background-color: var(--color-danger); color: #fff; border-color: #fff; margin-top: 15px; box-shadow: 0 0 12px var(--color-danger);">
+                                    🏆 FINALIZAR REUNIÓN (VER PODIO)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="border-top: 4px solid var(--color-border-grey); padding-top: 20px; margin-bottom: 20px;">
+                            <label for="score-goal-input" style="display: block; margin-bottom: 8px; font-family: 'Press Start 2P', monospace; font-size: 0.7rem;">
+                                META DE PUNTOS:
+                            </label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="score-goal-input" class="pixel-input" style="margin-bottom: 0; flex-grow: 1;" min="1" value="50">
+                                <button onclick="actualizarMeta()" class="pixel-btn pixel-btn-info">FIJAR</button>
+                            </div>
+                        </div>
+
+                        <div style="border-top: 4px solid var(--color-border-grey); padding-top: 20px; display: flex; gap: 10px;">
+                            <button onclick="confirmarReiniciarPuntos()" class="pixel-btn pixel-btn-warning" style="flex: 1; font-size: 0.65rem;">
+                                RESET PUNTOS
+                            </button>
+                            <button onclick="confirmarLimpiarJuego()" class="pixel-btn pixel-btn-danger" style="flex: 1; font-size: 0.65rem;">
+                                LIMPIAR TODO
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: LISTADO DE JUGADORES Y PUNTAJES -->
+                <div>
+                    <div class="pixel-panel accent-green" style="min-height: 520px;">
+                        <div class="panel-title" style="color: var(--color-success);">JUGADORES Y PUNTAJES</div>
+                        
+                        <div id="no-players-msg" style="text-align: center; padding: 40px 10px; color: var(--color-text-muted);">
+                            <p style="font-size: 1.2rem; margin-bottom: 10px;">👾</p>
+                            <p>NO HAY JUGADORES REGISTRADOS.</p>
+                            <p style="font-size: 0.8rem; margin-top: 10px;">AGREGA UNO PARA COMENZAR.</p>
+                        </div>
+
+                        <div id="players-list-container" style="display: flex; flex-direction: column; gap: 15px;">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CONTENIDO DE PESTAÑA: WORD MEMORICE REDISEÑADO -->
+        <div id="tab-memorice" class="admin-tab-content">
+            <div class="pixel-panel accent-yellow">
+                <div class="panel-title" style="color: var(--color-warning);">MEMORICE 3X3 - CONTRARRELOJ</div>
+                <p style="margin-bottom: 20px; font-size: 0.9rem; line-height: 1.6; color: var(--color-text-muted);">
+                    Se memorizan 9 casillas. Luego se tapan y se deben descubrir en el orden dictado por el administrador por 3 participantes rotando turnos en 70 segundos.
+                </p>
+                
+                <div class="app-grid">
+                    <!-- Configurar palabras y participantes -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0;">
+                        <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-info);">
+                            CONFIGURACIÓN DE RONDA
+                        </h3>
+                        
+                        <!-- 3 SELECTORES PARTICIPANTES -->
+                        <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+                            <label style="display: block; font-size: 0.6rem; font-family: 'Press Start 2P', monospace;">
+                                3 PARTICIPANTES DEL EQUIPO:
+                            </label>
+                            <select id="memorice-player-1-select" class="pixel-input" style="font-size: 0.7rem; padding: 5px; margin-bottom: 0;">
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                            <select id="memorice-player-2-select" class="pixel-input" style="font-size: 0.7rem; padding: 5px; margin-bottom: 0;">
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                            <select id="memorice-player-3-select" class="pixel-input" style="font-size: 0.7rem; padding: 5px; margin-bottom: 0;">
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                        </div>
+                        
+                        <label style="display: block; font-size: 0.65rem; font-family: 'Press Start 2P', monospace; margin-bottom: 8px;">
+                            CATEGORIAS POR DEFECTO:
+                        </label>
+                        <select id="memorice-category-select" class="pixel-input" onchange="loadPresetCategory(this.value)" style="font-size: 0.75rem;">
+                            <option value="">[ SELECCIONAR CATEGORIA (9 PALABRAS) ]</option>
+                            <option value="consolas">👾 CONSOLAS RETRO</option>
+                            <option value="juegos">🕹️ CLÁSICOS ARCADE</option>
+                            <option value="comida">🍕 COMIDA ARCADE</option>
+                            <option value="colores">🌈 COLORES NEÓN</option>
+                        </select>
+                        
+                        <label style="display: block; font-size: 0.65rem; font-family: 'Press Start 2P', monospace; margin-bottom: 8px;">
+                            U OTRO LISTADO (SEPARADO POR COMAS - EXACTO 9):
+                        </label>
+                        <textarea id="memorice-words-input" class="pixel-input" rows="4" style="height: auto; font-family: monospace; text-transform: uppercase; font-size: 0.75rem;" placeholder="INGRESA 9 PALABRAS..."></textarea>
+                        
+                        <button onclick="guardarConfigMemorice()" class="pixel-btn pixel-btn-info" style="width: 100%;">
+                            APLICAR CONFIGURACIÓN
+                        </button>
+                    </div>
+                    
+                    <!-- Mandos de Control en Vivo -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0;">
+                        <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-success);">
+                            CONTROLES EN VIVO
+                        </h3>
+                        
+                        <div style="background-color: var(--color-bg); padding: 12px; border: 3px solid var(--color-border-grey); margin-bottom: 15px; text-align: center; display: flex; align-items: center; justify-content: space-around;">
+                            <div>
+                                <p style="font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--color-text-muted); margin-bottom: 5px;">
+                                    CRONÓMETRO:
+                                </p>
+                                <span id="mem-timer-badge" style="font-family: 'Press Start 2P', monospace; font-size: 1.3rem; color: var(--color-warning);">
+                                    70s
+                                </span>
+                            </div>
+                            <div>
+                                <p style="font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--color-text-muted); margin-bottom: 5px;">
+                                    TURNO DE:
+                                </p>
+                                <span id="mem-active-player-name" style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; color: var(--color-danger);">
+                                    NINGUNO
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                            <button onclick="cambiarPantalla('game_memorice')" class="pixel-btn pixel-btn-info" style="flex: 1; font-size: 0.6rem; padding: 10px 5px;">
+                                CARGAR PANTALLA
+                            </button>
+                            <button onclick="iniciarMemoriceRonda()" class="pixel-btn pixel-btn-warning" style="flex: 1; font-size: 0.6rem; padding: 10px 5px;">
+                                1. MOSTRAR PALABRAS
+                            </button>
+                            <button onclick="iniciarJuegoMemorice()" class="pixel-btn pixel-btn-success" style="flex: 1; font-size: 0.6rem; padding: 10px 5px;">
+                                2. TAPAR Y JUGAR (70S)
+                            </button>
+                        </div>
+
+                        <!-- ORDEN OBJETIVO REQUERIDO -->
+                        <div style="border-top: 4px solid var(--color-border-grey); padding-top: 15px; margin-bottom: 15px;">
+                            <p style="font-family: 'Press Start 2P', monospace; font-size: 0.65rem; color: var(--color-info); margin-bottom: 8px;">
+                                SECUENCIA A DICTAR (ORDEN DEL ADMIN):
+                            </p>
+                            <div id="memorice-target-list" style="display: flex; flex-direction: column; gap: 5px;">
+                                <span style="font-size: 0.75rem; color: var(--color-text-muted);">Configura y presiona Iniciar para ver el orden.</span>
+                            </div>
+                        </div>
+
+                        <!-- REJILLA DE CASILLAS PARA OPERADOR -->
+                        <div style="border-top: 4px solid var(--color-border-grey); padding-top: 15px;">
+                            <p style="font-family: 'Press Start 2P', monospace; font-size: 0.65rem; color: var(--color-success); margin-bottom: 10px;">
+                                TABLERO DE CASILLAS (CLIC SEGÚN EL PARTICIPANTE):
+                            </p>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 250px; margin: 0 auto;">
+                                <button onclick="intentarCasillaMemorice(0)" class="pixel-btn" style="padding: 10px 0;">1</button>
+                                <button onclick="intentarCasillaMemorice(1)" class="pixel-btn" style="padding: 10px 0;">2</button>
+                                <button onclick="intentarCasillaMemorice(2)" class="pixel-btn" style="padding: 10px 0;">3</button>
+                                <button onclick="intentarCasillaMemorice(3)" class="pixel-btn" style="padding: 10px 0;">4</button>
+                                <button onclick="intentarCasillaMemorice(4)" class="pixel-btn" style="padding: 10px 0;">5</button>
+                                <button onclick="intentarCasillaMemorice(5)" class="pixel-btn" style="padding: 10px 0;">6</button>
+                                <button onclick="intentarCasillaMemorice(6)" class="pixel-btn" style="padding: 10px 0;">7</button>
+                                <button onclick="intentarCasillaMemorice(7)" class="pixel-btn" style="padding: 10px 0;">8</button>
+                                <button onclick="intentarCasillaMemorice(8)" class="pixel-btn" style="padding: 10px 0;">9</button>
+                            </div>
+                        </div>
+
+                        <!-- premiar equipo si completa -->
+                        <div style="border-top: 4px solid var(--color-border-grey); padding-top: 15px; margin-top: 15px;">
+                            <button onclick="premiarEquipoMemorice()" class="pixel-btn pixel-btn-success" style="width: 100%; font-size: 0.7rem;">
+                                ⭐ PREMIAR EQUIPO COMPLETADO (+50 PTS)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO DE PESTAÑA: PISTA MUSICAL -->
+        <div id="tab-music" class="admin-tab-content">
+            <div class="pixel-panel accent-cyan">
+                <div class="panel-title" style="color: var(--color-info);">JUEGO DE LA PISTA MUSICAL (5 PASOS)</div>
+                
+                <div class="app-grid">
+                    <!-- Configurar pistas y música -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0;">
+                        <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-info);">
+                            CONFIGURAR CANCIÓN
+                        </h3>
+                        
+                        <!-- SUBIDA DE ARCHIVO -->
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; font-size: 0.65rem; font-family: 'Press Start 2P', monospace; margin-bottom: 8px;">
+                                SUBIR AUDIO MP3:
+                            </label>
+                            <input type="file" id="music-file-input" class="pixel-input" accept="audio/*" style="font-size: 0.7rem; padding: 5px;">
+                            <button onclick="subirAudioFile()" class="pixel-btn pixel-btn-info" style="width: 100%; margin-top: 5px; font-size: 0.65rem;">
+                                SUBIR Y ASIGNAR
+                            </button>
+                        </div>
+                        
+                        <!-- URL DE AUDIO DIRECTO -->
+                        <div style="margin-bottom: 15px; border-top: 2px solid var(--color-border-grey); padding-top: 10px;">
+                            <label style="display: block; font-size: 0.65rem; font-family: 'Press Start 2P', monospace; margin-bottom: 8px;">
+                                URL DIRECTA DE AUDIO:
+                            </label>
+                            <input type="text" id="music-url-input" class="pixel-input" placeholder="http://servidor.com/musica.mp3" style="font-size: 0.75rem;">
+                        </div>
+                        
+                        <!-- PISTAS SECUENCIALES -->
+                        <div style="border-top: 2px solid var(--color-border-grey); padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                            <label style="display: block; font-size: 0.65rem; font-family: 'Press Start 2P', monospace; margin-bottom: 4px;">
+                                PISTAS TEXTUALES:
+                            </label>
+                            <input type="text" id="clue-1" class="pixel-input" placeholder="Pista 1 (ej: 1 segundo de audio)" value="Reproducir 1 segundo de audio" style="font-size: 0.75rem; margin-bottom: 5px;">
+                            <input type="text" id="clue-2" class="pixel-input" placeholder="Pista 2 (Banda/Artista)" style="font-size: 0.75rem; margin-bottom: 5px;">
+                            <input type="text" id="clue-3" class="pixel-input" placeholder="Pista 3 (Frase corta/Letra)" style="font-size: 0.75rem; margin-bottom: 5px;">
+                            <input type="text" id="clue-4" class="pixel-input" placeholder="Pista 4 (Año y Género)" style="font-size: 0.75rem; margin-bottom: 5px;">
+                            <input type="text" id="clue-5" class="pixel-input" placeholder="Pista 5 (Ahorcado / Nombre oculto)" style="font-size: 0.75rem; margin-bottom: 5px;">
+                        </div>
+                        
+                        <button onclick="guardarConfigMusic()" class="pixel-btn pixel-btn-info" style="width: 100%; margin-top: 10px;">
+                            APLICAR CANCIÓN
+                        </button>
+                    </div>
+                    
+                    <!-- Control del Juego y Premiación -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0;">
+                        <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-success);">
+                            CONTROLES DEL PROYECTOR
+                        </h3>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <button onclick="cambiarPantalla('game_music')" class="pixel-btn pixel-btn-info" style="flex: 1; font-size: 0.65rem; padding: 10px 5px;">
+                                CARGAR PANTALLA
+                            </button>
+                            <button onclick="revelarSiguientePista()" class="pixel-btn pixel-btn-success" style="flex: 1; font-size: 0.65rem; padding: 10px 5px;">
+                                REVELAR PISTA (+1)
+                            </button>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                            <button onclick="fijarNivelPista(0)" class="pixel-btn pixel-btn-danger" style="flex: 1; font-size: 0.65rem;">
+                                REINICIAR PISTAS (LVL 0)
+                            </button>
+                        </div>
+                        
+                        <!-- Panel de Premiación -->
+                        <div style="border-top: 4px solid var(--color-border-grey); padding-top: 20px;">
+                            <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-warning);">
+                                ASIGNAR PUNTUACION
+                            </h3>
+                            
+                            <div style="background-color: var(--color-bg); padding: 12px; border: 3px solid var(--color-border-grey); margin-bottom: 15px; text-align: center;">
+                                <p style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: #fff; margin-bottom: 5px;">
+                                    PUNTUACIÓN ACTUAL DE LA RONDA:
+                                </p>
+                                <span id="music-current-points-badge" style="font-family: 'Press Start 2P', monospace; font-size: 1.5rem; color: var(--color-warning);">
+                                    0 PTS
+                                </span>
+                            </div>
+                            
+                            <label style="display: block; font-size: 0.65rem; font-family: 'Press Start 2P', monospace; margin-bottom: 8px;">
+                                SELECCIONAR PARTICIPANTE:
+                            </label>
+                            <select id="music-player-select" class="pixel-input" style="font-size: 0.75rem; margin-bottom: 15px;">
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                            
+                            <button onclick="premiarMusicaAdivinada()" class="pixel-btn pixel-btn-success" style="width: 100%;">
+                                ⭐ ¡CANCION ADIVINADA!
+        <!-- CONTENIDO DE PESTAÑA: AHORA CAIGO -->
+        <div id="tab-ahoracaigo" class="admin-tab-content">
+            <div class="pixel-panel accent-magenta">
+                <div class="panel-title" style="color: var(--color-danger);">JUEGO "AHORA CAIGO"</div>
+                <p style="margin-bottom: 20px; font-size: 0.9rem; line-height: 1.6; color: var(--color-text-muted);">
+                    Versus de adivinar conceptos teóricos bíblicos bajo presión. 30 segundos automáticos por turno.
+                </p>
+                
+                <div class="app-grid">
+                    <!-- Configurar Versus -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0;">
+                        <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-info);">
+                            CONFIGURAR VERSUS
+                        </h3>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; font-size: 0.6rem; font-family: 'Press Start 2P', monospace; margin-bottom: 5px;">
+                                    JUGADOR A:
+                                </label>
+                                <select id="ac-player-a-select" class="pixel-input" style="font-size: 0.7rem; padding: 5px;">
+                                    <!-- Se llena dinámicamente -->
+                                </select>
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; font-size: 0.6rem; font-family: 'Press Start 2P', monospace; margin-bottom: 5px;">
+                                    JUGADOR B:
+                                </label>
+                                <select id="ac-player-b-select" class="pixel-input" style="font-size: 0.7rem; padding: 5px;">
+                                    <!-- Se llena dinámicamente -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button onclick="guardarConfigAhoraCaigo()" class="pixel-btn pixel-btn-info" style="width: 100%; margin-top: 10px;">
+                            GUARDAR Y CARGAR ESPERA
+                        </button>
+                    </div>
+                    
+                    <!-- Mandos del Juego y Temporizador -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0;">
+                        <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-success);">
+                            CONTROLES DE LA RONDA
+                        </h3>
+                        
+                        <div style="background-color: var(--color-bg); padding: 12px; border: 3px solid var(--color-border-grey); margin-bottom: 15px; text-align: center; display: flex; align-items: center; justify-content: space-around;">
+                            <div>
+                                <p style="font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--color-text-muted); margin-bottom: 5px;">
+                                    TIEMPO RESTANTE:
+                                </p>
+                                <span id="ac-timer-badge" style="font-family: 'Press Start 2P', monospace; font-size: 1.5rem; color: var(--color-danger);">
+                                    30s
+                                </span>
+                            </div>
+                            <div>
+                                <p style="font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--color-text-muted); margin-bottom: 5px;">
+                                    TURNO DE:
+                                </p>
+                                <span id="ac-active-player-name" style="font-family: 'Press Start 2P', monospace; font-size: 0.8rem; color: var(--color-warning);">
+                                    NINGUNO
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Info de la Pregunta Activa (para el Administrador) -->
+                        <div id="ac-active-question-panel" style="background-color: #171822; padding: 15px; border: 3px dashed var(--color-border-grey); margin-bottom: 15px;">
+                            <p style="font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--color-info); margin-bottom: 8px;">
+                                PREGUNTA ACTUAL:
+                            </p>
+                            <p id="ac-question-display-text" style="font-size: 0.95rem; color: #fff; line-height: 1.4; margin-bottom: 10px;">
+                                [Esperando inicio del versus]
+                            </p>
+                            <p style="font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--color-warning); margin-bottom: 5px;">
+                                RESPUESTA CORRECTA:
+                            </p>
+                            <span id="ac-correct-display-word" style="font-family: 'Press Start 2P', monospace; font-size: 1.1rem; color: var(--color-success); text-transform: uppercase; letter-spacing: 2px;">
+                                NINGUNA
+                            </span>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button id="ac-start-versus-btn" onclick="iniciarTiempoAhoraCaigo()" class="pixel-btn pixel-btn-success" style="width: 100%; font-size: 0.75rem; padding: 12px 5px;">
+                                🚀 INICIAR JUEGO (VERSUS 1V1)
+                            </button>
+                            
+                            <!-- Botón Correcto Gigante -->
+                            <button id="ac-correct-btn" onclick="registrarCorrecto()" class="pixel-btn pixel-btn-success" style="width: 100%; font-size: 0.85rem; padding: 15px 5px; display: none;">
+                                👍 ¡RESPUESTA CORRECTA! (Siguiente Turno)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>� FALLÓ / TIEMPO
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO DE PESTAÑA: LA RULETA -->
+        <div id="tab-ruleta" class="admin-tab-content">
+            <div class="pixel-panel accent-cyan">
+                <div class="panel-title" style="color: var(--color-info);">LA RULETA ROMPEHIELO</div>
+                <p style="margin-bottom: 20px; font-size: 0.9rem; line-height: 1.6; color: var(--color-text-muted);">
+                    Selecciona al azar un participante y realiza una pregunta para ganar puntos de participación.
+                </p>
+                
+                <div class="app-grid">
+                    <!-- Control de Ruleta -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-info);">
+                                CONTROLES DE LA RULETA
+                            </h3>
+                            <button onclick="cambiarPantalla('game_ruleta')" class="pixel-btn pixel-btn-info" style="width: 100%; margin-bottom: 10px; font-size: 0.65rem;">
+                                CARGAR PANTALLA EN PROYECTOR
+                            </button>
+                            <button onclick="girarRuleta()" class="pixel-btn pixel-btn-success" style="width: 100%; padding: 15px 10px; font-size: 0.85rem;">
+                                🎡 GIRAR RULETA (ELEGIR JOVEN)
+                            </button>
+                        </div>
+                        
+                        <div style="border-top: 4px solid var(--color-border-grey); padding-top: 15px; margin-top: 15px; text-align: center;">
+                            <p style="font-family: 'Press Start 2P', monospace; font-size: 0.65rem; color: var(--color-text-muted); margin-bottom: 8px;">
+                                JOVEN SELECCIONADO:
+                            </p>
+                            <span id="ruleta-selected-player-badge" style="font-family: 'Press Start 2P', monospace; font-size: 1.1rem; color: var(--color-warning);">
+                                NINGUNO
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta de Preguntas -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0;">
+                        <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-success);">
+                            SELECCIONAR PREGUNTA
+                        </h3>
+                        
+                        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                            <button onclick="obtenerPreguntaRuleta('verde')" class="pixel-btn pixel-btn-success" style="flex: 1; font-size: 0.55rem; padding: 10px 2px;">
+                                🟢 VERDE (+10)
+                            </button>
+                            <button onclick="obtenerPreguntaRuleta('amarillo')" class="pixel-btn pixel-btn-warning" style="flex: 1; font-size: 0.55rem; padding: 10px 2px;">
+                                🟡 AMARILLO (+20)
+                            </button>
+                            <button onclick="obtenerPreguntaRuleta('rojo')" class="pixel-btn pixel-btn-danger" style="flex: 1; font-size: 0.55rem; padding: 10px 2px;">
+                                🔴 ROJO (+30)
+                            </button>
+                        </div>
+                        
+                        <!-- Caja de visualización de pregunta -->
+                        <div style="background-color: var(--color-bg); padding: 12px; border: 3px solid var(--color-border-grey); margin-bottom: 20px; min-height: 100px;">
+                            <p style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: var(--color-info); margin-bottom: 8px;" id="ruleta-question-level-label">
+                                PREGUNTA:
+                            </p>
+                            <p id="ruleta-question-text" style="font-family: 'Courier Prime', monospace; font-size: 1rem; color: #fff; line-height: 1.4;">
+                                Gira la ruleta y selecciona un color.
+                            </p>
+                        </div>
+                        
+                        <button onclick="premiarRuleta()" class="pixel-btn pixel-btn-success" style="width: 100%; font-size: 0.75rem; padding: 12px 10px;" id="ruleta-award-btn" disabled>
+                            ⭐ PREMIAR PARTICIPACIÓN
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO DE PESTAÑA: ¿QUIÉN ES MÁS PROBABLE QUE...? -->
+        <div id="tab-probable" class="admin-tab-content">
+            <div class="pixel-panel accent-yellow">
+                <div class="panel-title" style="color: var(--color-warning);">¿QUIÉN ES MÁS PROBABLE QUE...?</div>
+                <p style="margin-bottom: 20px; font-size: 0.9rem; line-height: 1.6; color: var(--color-text-muted);">
+                    El grupo vota a mano alzada apuntando al que coincida con la premisa cómica.
+                </p>
+                
+                <div class="app-grid">
+                    <!-- Configurar premisa -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0;">
+                        <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-info);">
+                            CONFIGURAR PREMISA
+                        </h3>
+                        
+                        <label style="display: block; font-size: 0.65rem; font-family: 'Press Start 2P', monospace; margin-bottom: 8px;">
+                            ELEGIR PREMISA DEL BANCO:
+                        </label>
+                        <select id="probable-preset-select" class="pixel-input" onchange="cargarProbablePreset(this.value)" style="font-size: 0.75rem;">
+                            <option value="">[ SELECCIONAR PREMISA ]</option>
+                            <!-- Se llena dinámicamente -->
+                        </select>
+                        
+                        <label style="display: block; font-size: 0.65rem; font-family: 'Press Start 2P', monospace; margin-bottom: 8px;">
+                            O ESCRIBIR UNA PERSONALIZADA:
+                        </label>
+                        <textarea id="probable-question-input" class="pixel-input" rows="3" style="height: auto; font-size: 0.8rem;" placeholder="¿Quién es más probable que...?"></textarea>
+                        
+                        <button onclick="guardarConfigProbable()" class="pixel-btn pixel-btn-info" style="width: 100%;">
+                            APLICAR PREMISA
+                        </button>
+                    </div>
+                    
+                    <!-- Registrar Votos / Ganadores -->
+                    <div class="pixel-panel-grey" style="margin-bottom: 0;">
+                        <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; margin-bottom: 15px; color: var(--color-success);">
+                            SELECCIONAR GANADORES DEL GRUPO
+                        </h3>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <button onclick="cambiarPantalla('game_probable')" class="pixel-btn pixel-btn-info" style="flex: 1; font-size: 0.65rem; padding: 10px 5px;">
+                                CARGAR PANTALLA
+                            </button>
+                        </div>
+                        
+                        <label style="display: block; font-size: 0.65rem; font-family: 'Press Start 2P', monospace; margin-bottom: 8px;">
+                            MARCAR GANADOR(ES):
+                        </label>
+                        <div class="admin-checkbox-list" id="probable-checkbox-container">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                        
+                        <button onclick="guardarGanadoresProbable()" class="pixel-btn pixel-btn-success" style="width: 100%; margin-top: 15px;">
+                            ⭐ ASIGNAR GANADORES (+20 PTS)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE CONFIRMACIÓN CUSTOM -->
+    <div id="custom-confirm-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center;">
+        <div class="pixel-panel accent-magenta" style="max-width: 450px; width: 90%; text-align: center; background-color: var(--color-bg);">
+            <div class="panel-title" style="color: var(--color-danger);" id="confirm-modal-title">CONFIRMACION</div>
+            <p id="confirm-modal-text" style="font-family: 'Courier Prime', monospace; font-size: 1.1rem; margin-bottom: 25px; line-height: 1.5; color: #fff;">
+                ¿ESTÁS SEGURO?
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button id="confirm-modal-yes" class="pixel-btn pixel-btn-success" style="font-size: 0.8rem; flex: 1;">SI</button>
+                <button id="confirm-modal-no" class="pixel-btn pixel-btn-grey" style="font-size: 0.8rem; flex: 1;">NO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ALERTA CUSTOM -->
+    <div id="custom-alert-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center;">
+        <div class="pixel-panel accent-cyan" style="max-width: 450px; width: 90%; text-align: center; background-color: var(--color-bg);">
+            <div class="panel-title" style="color: var(--color-info);" id="alert-modal-title">ALERTA</div>
+            <p id="alert-modal-text" style="font-family: 'Courier Prime', monospace; font-size: 1.1rem; margin-bottom: 25px; line-height: 1.5; color: #fff;">
+                MENSAJE
+            </p>
+            <button id="alert-modal-close" class="pixel-btn pixel-btn-info" style="font-size: 0.8rem; width: 100%;">ENTENDIDO</button>
+        </div>
+    </div>
+
+    <!-- SCRIPTS DE INTERACCIÓN -->
+    <script>
+        let selectedEmojiChar = '👾';
+        let presetsMemorice = {
+            consolas: ["ATARI", "NES", "GENESIS", "GAMEBOY", "SUPER NES", "N64", "PLAYSTATION", "DREAMCAST", "WII"],
+            juegos: ["PACMAN", "TETRIS", "PONG", "DOOM", "ZELDA", "METROID", "GALAGA", "FROGGER", "ASTEROIDS"],
+            comida: ["PIZZA", "BURGER", "HELADO", "DONA", "NUGGETS", "SUSHI", "TACOS", "PALOMITAS", "HOTDOG"],
+            colores: ["ROJO", "AZUL", "VERDE", "CYAN", "MAGENTA", "AMARILLO", "BLANCO", "NEGRO", "NARANJA"]
+        };
+        let presetConceptosAC = [];
+        let probablePresets = [];
+
+        // Temporizadores Locales
+        let acTimer = null;
+        let acTimeLeft = 30;
+        let acIsTimerActive = false;
+
+        let memTimer = null;
+        let memTimeLeft = 70;
+        let memIsTimerActive = false;
+
+        function loadPresetCategory(val) {
+            if (!val) return;
+            const words = presetsMemorice[val] || [];
+            document.getElementById('memorice-words-input').value = words.join(', ');
+        }
+
+        // Gestión de pestañas del panel
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            btnElement.classList.add('active');
+
+            document.querySelectorAll('.admin-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // Gestión de modales customizados
+        function showCustomConfirm(message, onYes) {
+            const modal = document.getElementById('custom-confirm-modal');
+            document.getElementById('confirm-modal-text').innerText = message;
+            modal.style.display = 'flex';
+            
+            const yesBtn = document.getElementById('confirm-modal-yes');
+            const noBtn = document.getElementById('confirm-modal-no');
+            
+            yesBtn.onclick = () => {
+                modal.style.display = 'none';
+                onYes();
+            };
+            noBtn.onclick = () => {
+                modal.style.display = 'none';
+            };
+        }
+
+        function showCustomAlert(message, title = "ALERTA") {
+            const modal = document.getElementById('custom-alert-modal');
+            document.getElementById('alert-modal-title').innerText = title;
+            document.getElementById('alert-modal-text').innerText = message;
+            modal.style.display = 'flex';
+            
+            const closeBtn = document.getElementById('alert-modal-close');
+            closeBtn.onclick = () => {
+                modal.style.display = 'none';
+            };
+        }
+
+        function selectEmoji(emoji, element) {
+            document.querySelectorAll('.emoji-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedEmojiChar = emoji;
+        }
+
+        // Cargar presets de Ahora Caigo al iniciar
+        // Presets obsoletos eliminados
+
+        // Cargar presets de ¿Quién es más probable? al iniciar
+        async function cargarProbablePresetsList() {
+            try {
+                const res = await fetch('/api/juego/probable/preset');
+                probablePresets = await res.json();
+                
+                const selectEl = document.getElementById('probable-preset-select');
+                selectEl.innerHTML = '<option value="">[ SELECCIONAR PREMISA ]</option>' + 
+                    probablePresets.map((q, idx) => `<option value="${idx}">${q}</option>`).join('');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function cargarProbablePreset(idx) {
+            if (idx === "") return;
+            document.getElementById('probable-question-input').value = probablePresets[idx];
+        }
+
+        // Cargar estado inicial y conectar SSE para actualizaciones en tiempo real
+        async function fetchEstado() {
+            try {
+                const response = await fetch('/api/estado');
+                const data = await response.json();
+                renderizarEstado(data);
+            } catch (err) {
+                console.error("Error al cargar estado:", err);
+            }
+        }
+
+        function renderizarEstado(state) {
+            // Renderizar meta
+            document.getElementById('score-goal-input').value = state.score_goal;
+
+            // Renderizar activo pantalla botones
+            document.querySelectorAll('[id^="btn-screen-"]').forEach(btn => {
+                btn.className = 'pixel-btn';
+            });
+            const activeBtn = document.getElementById(`btn-screen-${state.active_screen}`);
+            if (activeBtn) {
+                activeBtn.className = 'pixel-btn pixel-btn-info';
+            }
+            // highlight final podium screen specially if active
+            const finalBtn = document.getElementById('btn-screen-winner');
+            if (state.active_screen === 'winner') {
+                finalBtn.className = 'pixel-btn pixel-btn-danger active-highlight';
+            } else {
+                finalBtn.className = 'pixel-btn pixel-btn-danger';
+            }
+
+            // Renderizar lista de jugadores
+            const listContainer = document.getElementById('players-list-container');
+            const noPlayersMsg = document.getElementById('no-players-msg');
+            
+            if (!state.jugadores || state.jugadores.length === 0) {
+                listContainer.innerHTML = '';
+                noPlayersMsg.style.display = 'block';
+                return;
+            }
+
+            noPlayersMsg.style.display = 'none';
+            
+            // Ordenar jugadores por ID en el panel de administración
+            const jugadoresOrdenados = [...state.jugadores].sort((a, b) => a.id - b.id);
+            
+            listContainer.innerHTML = jugadoresOrdenados.map(j => {
+                return `
+                    <div class="pixel-panel-grey" style="padding: 12px; margin-bottom: 0; position: relative;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.6rem;">${j.emoji}</span>
+                                <div>
+                                    <span style="font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: #fff;">
+                                        ${j.nombre}
+                                    </span>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="font-family: 'Press Start 2P', monospace; font-size: 1.2rem; color: var(--color-warning);">
+                                    ${j.puntaje_total} pts
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- BOTONES DE PUNTOS -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 5px;">
+                            <div style="display: flex; gap: 5px;">
+                                <button onclick="modificarPuntos(${j.id}, 1)" class="pixel-btn pixel-btn-success" style="font-size: 0.65rem; padding: 6px 10px;">+1</button>
+                                <button onclick="modificarPuntos(${j.id}, 5)" class="pixel-btn pixel-btn-success" style="font-size: 0.65rem; padding: 6px 10px;">+5</button>
+                                <button onclick="modificarPuntos(${j.id}, 10)" class="pixel-btn pixel-btn-success" style="font-size: 0.65rem; padding: 6px 10px;">+10</button>
+                                <button onclick="modificarPuntos(${j.id}, -1)" class="pixel-btn pixel-btn-danger" style="font-size: 0.65rem; padding: 6px 10px;">-1</button>
+                                <button onclick="modificarPuntos(${j.id}, -5)" class="pixel-btn pixel-btn-danger" style="font-size: 0.65rem; padding: 6px 10px;">-5</button>
+                            </div>
+                            
+                            <button onclick="eliminarJugador(${j.id})" class="pixel-btn pixel-btn-grey" style="font-size: 0.65rem; padding: 6px 10px; border-color: var(--color-danger); color: var(--color-danger);">
+                                ELIMINAR
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Sincronizar selectores de jugadores en los mini-juegos
+            const selectOptions = state.jugadores.map(j => `<option value="${j.id}">${j.emoji} ${j.nombre}</option>`).join('');
+            
+            document.getElementById('music-player-select').innerHTML = selectOptions;
+            document.getElementById('ac-player-a-select').innerHTML = selectOptions;
+            document.getElementById('ac-player-b-select').innerHTML = selectOptions;
+
+            // Selectores 3 participantes del Memorice
+            const p1Sel = document.getElementById('memorice-player-1-select');
+            const p2Sel = document.getElementById('memorice-player-2-select');
+            const p3Sel = document.getElementById('memorice-player-3-select');
+            
+            p1Sel.innerHTML = '<option value="">[ SELECCIONAR PARTICIPANTE 1 ]</option>' + selectOptions;
+            p2Sel.innerHTML = '<option value="">[ SELECCIONAR PARTICIPANTE 2 ]</option>' + selectOptions;
+            p3Sel.innerHTML = '<option value="">[ SELECCIONAR PARTICIPANTE 3 ]</option>' + selectOptions;
+
+            // Sincronizar checkboxes de ¿Quién es más probable? conservando el estado marcado por el operador
+            const checkboxContainer = document.getElementById('probable-checkbox-container');
+            if (checkboxContainer) {
+                const selectedIds = new Set(
+                    Array.from(document.querySelectorAll('#probable-checkbox-container input[type="checkbox"]:checked'))
+                    .map(cb => parseInt(cb.value))
+                );
+                
+                checkboxContainer.innerHTML = state.jugadores.map(j => `
+                    <label class="admin-checkbox-item">
+                        <input type="checkbox" value="${j.id}" ${selectedIds.has(j.id) ? 'checked' : ''}>
+                        <span>${j.emoji} ${j.nombre}</span>
+                    </label>
+                `).join('');
+            }
+
+            // Sincronizar valores guardados de jugadores Versus en Ahora Caigo
+            if (state.ahoracaigo) {
+                if (state.ahoracaigo.player_a_id) document.getElementById('ac-player-a-select').value = state.ahoracaigo.player_a_id;
+                if (state.ahoracaigo.player_b_id) document.getElementById('ac-player-b-select').value = state.ahoracaigo.player_b_id;
+                
+                // Mostrar nombre del jugador de turno activo
+                const activePlayer = state.jugadores.find(j => j.id === state.ahoracaigo.active_player_id);
+                document.getElementById('ac-active-player-name').innerText = activePlayer ? activePlayer.nombre.toUpperCase() : "NINGUNO";
+                
+                // Mostrar la pregunta y la respuesta correcta para el admin
+                document.getElementById('ac-question-display-text').innerText = state.ahoracaigo.definition || "[Esperando inicio del versus]";
+                document.getElementById('ac-correct-display-word').innerText = state.ahoracaigo.concept || "NINGUNA";
+                
+                // Sincronizar botones de flujo según el estado
+                const startBtn = document.getElementById('ac-start-versus-btn');
+                const correctBtn = document.getElementById('ac-correct-btn');
+                
+                if (state.ahoracaigo.status === "idle") {
+                    if (startBtn) startBtn.style.display = "block";
+                    if (correctBtn) correctBtn.style.display = "none";
+                } else if (state.ahoracaigo.status === "playing") {
+                    if (startBtn) startBtn.style.display = "none";
+                    if (correctBtn) correctBtn.style.display = "block";
+                } else {
+                    if (startBtn) startBtn.style.display = "none";
+                    if (correctBtn) correctBtn.style.display = "none";
+                }
+
+                // Sincronizar reloj por SSE
+                if (state.ahoracaigo.timer_active) {
+                    if (!acIsTimerActive) {
+                        acIsTimerActive = true;
+                        startLocalTimer(state.ahoracaigo.timer_start_time);
+                    }
+                } else {
+                    acIsTimerActive = false;
+                    clearInterval(acTimer);
+                    if (state.ahoracaigo.status === "timeout") {
+                        document.getElementById('ac-timer-badge').innerText = "0s (FIN)";
+                    } else {
+                        document.getElementById('ac-timer-badge').innerText = "30s";
+                    }
+                }
+            }
+
+            // Sincronizar estado Ruleta
+            if (state.ruleta) {
+                const selPlayer = state.jugadores.find(j => j.id === state.ruleta.selected_player_id);
+                document.getElementById('ruleta-selected-player-badge').innerText = selPlayer ? `${selPlayer.emoji} ${selPlayer.nombre.toUpperCase()}` : "NINGUNO";
+                
+                document.getElementById('ruleta-question-text').innerText = state.ruleta.question;
+                document.getElementById('ruleta-question-level-label').innerText = `PREGUNTA [NIVEL ${state.ruleta.level.toUpperCase()} - ${state.ruleta.points} PTS]:`;
+                
+                // Habilitar premiación si hay pregunta y jugador seleccionado
+                const awardBtn = document.getElementById('ruleta-award-btn');
+                if (state.ruleta.selected_player_id && state.ruleta.status === "selected") {
+                    awardBtn.removeAttribute('disabled');
+                } else {
+                    awardBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            // Sincronizar estado ¿Quién es más probable?
+            if (state.probable) {
+                if (state.probable.question && document.getElementById('probable-question-input').value === "") {
+                    document.getElementById('probable-question-input').value = state.probable.question;
+                }
+            }
+
+            // Sincronizar Memorice inputs, turnos y orden
+            if (state.memorice) {
+                if (state.memorice.words && document.getElementById('memorice-words-input').value === "") {
+                    document.getElementById('memorice-words-input').value = state.memorice.words.join(', ');
+                }
+                const mPids = state.memorice.players_ids || [];
+                if (mPids[0]) p1Sel.value = mPids[0];
+                if (mPids[1]) p2Sel.value = mPids[1];
+                if (mPids[2]) p3Sel.value = mPids[2];
+
+                // Turno del participante de memorice
+                const memPids = state.memorice.players_ids || [];
+                const activeMemIdx = state.memorice.active_player_index || 0;
+                const activeMemPlayerId = memPids[activeMemIdx];
+                const activeMemPlayer = state.jugadores.find(j => j.id === activeMemPlayerId);
+                document.getElementById('mem-active-player-name').innerText = activeMemPlayer ? activeMemPlayer.nombre.toUpperCase() : "NINGUNO";
+
+                // Renderizar secuencia a dictar por el admin
+                const targetList = document.getElementById('memorice-target-list');
+                if (state.memorice.words && state.memorice.order && state.memorice.status === "playing") {
+                    const order = state.memorice.order;
+                    const currentIdx = state.memorice.current_order_index;
+                    const words = state.memorice.words;
+                    
+                    targetList.innerHTML = order.map((wordIdx, idx) => {
+                        const isCompleted = idx < currentIdx;
+                        const isCurrent = idx === currentIdx;
+                        const word = words[wordIdx];
+                        
+                        let statusBadge = "";
+                        let style = "padding: 5px; margin-bottom: 5px; border: 2px solid var(--color-border-grey);";
+                        if (isCompleted) {
+                            statusBadge = " [OK]";
+                            style += " background-color: #123d1d; border-color: var(--color-success); opacity: 0.5;";
+                        } else if (isCurrent) {
+                            statusBadge = " [🎯 DICTAR AHORA]";
+                            style += " background-color: #3d3412; border-color: var(--color-warning); color: var(--color-warning); font-weight: bold;";
+                        }
+                        
+                        return `
+                            <div style="${style} font-family: 'Press Start 2P', monospace; font-size: 0.65rem;">
+                                ${idx + 1}. ${word} (Casilla ${wordIdx + 1})${statusBadge}
+                            </div>
+                        `;
+                    }).join('');
+                } else if (state.memorice.status === "completed") {
+                    targetList.innerHTML = `<span style="font-size:0.75rem; color:var(--color-success); font-weight:bold;">¡FELICIDADES! COMPLETADO CON ÉXITO.</span>`;
+                } else if (state.memorice.status === "gameover") {
+                    targetList.innerHTML = `<span style="font-size:0.75rem; color:var(--color-danger); font-weight:bold;">¡GAME OVER! TIEMPO AGOTADO.</span>`;
+                } else {
+                    targetList.innerHTML = `<span style="font-size:0.75rem; color:var(--color-text-muted);">Configura y arranca el contrarreloj para ver el orden.</span>`;
+                }
+
+                // Sincronizar reloj de 70s
+                if (state.memorice.timer_active) {
+                    if (!memIsTimerActive) {
+                        memIsTimerActive = true;
+                        startMemTimer(state.memorice.timer_start_time);
+                    }
+                } else {
+                    memIsTimerActive = false;
+                    clearInterval(memTimer);
+                    document.getElementById('mem-timer-badge').innerText = "70s";
+                }
+            }
+
+            // Sincronizar Pista de música inputs
+            if (state.music) {
+                if (state.music.audio_url && document.getElementById('music-url-input').value === "") {
+                    document.getElementById('music-url-input').value = state.music.audio_url;
+                }
+                state.music.clues.forEach((c, idx) => {
+                    const inputEl = document.getElementById(`clue-${idx + 1}`);
+                    if (inputEl && inputEl.value === "" && idx > 0) {
+                        inputEl.value = c;
+                    }
+                });
+                
+                const level = state.music.revealed_level || 0;
+                const points = level > 0 ? (60 - (level * 10)) : 0;
+                document.getElementById('music-current-points-badge').innerText = points + " PTS";
+            }
+        }
+
+        // --- MANEJO DEL RElOJ LOCAL EN AHORA CAIGO ---
+
+        function startLocalTimer(startTime) {
+            clearInterval(acTimer);
+            const elapsed = Math.floor((Date.now() / 1000) - startTime);
+            acTimeLeft = Math.max(0, 30 - elapsed);
+            
+            document.getElementById('ac-timer-badge').innerText = acTimeLeft + "s";
+            
+            acTimer = setInterval(() => {
+                acTimeLeft--;
+                if (acTimeLeft <= 0) {
+                    acTimeLeft = 0;
+                    clearInterval(acTimer);
+                    acIsTimerActive = false;
+                    registrarFallo(); // Tiempo agotado
+                }
+                document.getElementById('ac-timer-badge').innerText = acTimeLeft + "s";
+            }, 1000);
+        }
+
+        // --- MANEJO DEL RElOJ LOCAL EN MEMORICE (70s) ---
+
+        function startMemTimer(startTime) {
+            clearInterval(memTimer);
+            const elapsed = Math.floor((Date.now() / 1000) - startTime);
+            memTimeLeft = Math.max(0, 70 - elapsed);
+            
+            document.getElementById('mem-timer-badge').innerText = memTimeLeft + "s";
+            
+            memTimer = setInterval(() => {
+                memTimeLeft--;
+                if (memTimeLeft <= 0) {
+                    memTimeLeft = 0;
+                    clearInterval(memTimer);
+                    memIsTimerActive = false;
+                    registrarMemFallo(); // Tiempo agotado
+                }
+                document.getElementById('mem-timer-badge').innerText = memTimeLeft + "s";
+            }, 1000);
+        }
+
+        async function registrarMemFallo() {
+            clearInterval(memTimer);
+            memIsTimerActive = false;
+            try {
+                await fetch('/api/juego/memorice/fallo', { method: 'POST' });
+                showCustomAlert("¡TIEMPO AGOTADO! El equipo no logró desbloquear todas las casillas.", "GAME OVER");
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // --- ACCIONES REST DE SCOREBOARD ---
+
+        async function agregarJugador(event) {
+            event.preventDefault();
+            const nameInput = document.getElementById('player-name');
+            const nombre = nameInput.value.trim();
+            if (!nombre) return;
+
+            try {
+                const res = await fetch('/api/jugadores', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre: nombre, emoji: selectedEmojiChar })
+                });
+                if (res.ok) {
+                    nameInput.value = '';
+                    fetchEstado();
+                } else {
+                    const err = await res.json();
+                    showCustomAlert(err.error || "Error al agregar jugador");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function modificarPuntos(jid, puntos) {
+            try {
+                const res = await fetch(`/api/jugadores/${jid}/puntos`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ puntos: puntos })
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    showCustomAlert(err.error);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function cambiarPantalla(screenName) {
+            try {
+                await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ active_screen: screenName })
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function actualizarMeta() {
+            const goalInput = document.getElementById('score-goal-input');
+            const scoreGoal = parseInt(goalInput.value);
+            if (isNaN(scoreGoal) || scoreGoal < 1) return;
+
+            try {
+                const res = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ score_goal: scoreGoal })
+                });
+                if (res.ok) {
+                    showCustomAlert("Meta actualizada a " + scoreGoal + " puntos", "SUCESO");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function eliminarJugador(jid) {
+            showCustomConfirm("¿Seguro que deseas eliminar este jugador?", async () => {
+                try {
+                    await fetch(`/api/jugadores/${jid}`, { method: 'DELETE' });
+                } catch (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        function confirmarReiniciarPuntos() {
+            showCustomConfirm("¿Deseas reiniciar los puntajes de TODOS los jugadores a 0?", async () => {
+                try {
+                    await fetch('/api/juego/reiniciar', { method: 'POST' });
+                } catch (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        function confirmarLimpiarJuego() {
+            showCustomConfirm("¿Seguro que quieres eliminar a TODOS los jugadores y empezar de cero?", async () => {
+                try {
+                    await fetch('/api/juego/limpiar', { method: 'POST' });
+                } catch (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        // --- ACCIONES REST DE JUEGO: MEMORICE ---
+
+        async function guardarConfigMemorice() {
+            const rawWords = document.getElementById('memorice-words-input').value;
+            const words = rawWords.split(',').map(w => w.trim()).filter(w => w.length > 0);
+            if (words.length !== 9) {
+                showCustomAlert("Por favor ingresa exactamente 9 palabras.", "ERROR");
+                return;
+            }
+            
+            const player1 = document.getElementById('memorice-player-1-select').value;
+            const player2 = document.getElementById('memorice-player-2-select').value;
+            const player3 = document.getElementById('memorice-player-3-select').value;
+            
+            if (!player1 || !player2 || !player3) {
+                showCustomAlert("Selecciona a los 3 participantes para el equipo.", "ERROR");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/juego/memorice/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        words: words, 
+                        players_ids: [player1, player2, player3] 
+                    })
+                });
+                if (res.ok) {
+                    showCustomAlert("Configuración de Memorice guardada con éxito.", "SUCESO");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function iniciarMemoriceRonda() {
+            try {
+                await fetch('/api/juego/memorice/iniciar-memorice', { method: 'POST' });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function iniciarJuegoMemorice() {
+            try {
+                await fetch('/api/juego/memorice/iniciar-juego', { method: 'POST' });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function intentarCasillaMemorice(idx) {
+            try {
+                const res = await fetch('/api/juego/memorice/intentar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ index: idx })
+                });
+                const data = await res.json();
+                if (data.error_index === idx) {
+                    // Fallo, limpiar tras 1 segundo
+                    setTimeout(async () => {
+                        await fetch('/api/juego/memorice/clear-error', { method: 'POST' });
+                    }, 1000);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function premiarEquipoMemorice() {
+            // Asignar +50 a cada uno de los 3 jugadores del Memorice
+            try {
+                const response = await fetch('/api/estado');
+                const state = await response.json();
+                const pids = state.memorice.players_ids || [];
+                
+                if (pids.length === 0) {
+                    showCustomAlert("No hay participantes configurados para premiar.", "ERROR");
+                    return;
+                }
+                
+                for (let pid of pids) {
+                    await fetch(`/api/jugadores/${pid}/puntos`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ puntos: 50 })
+                    });
+                }
+                showCustomAlert("¡Premio de +50 puntos asignado a los 3 integrantes del equipo!", "SUCESO");
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // --- ACCIONES REST DE JUEGO: PISTA MUSICAL ---
+
+        async function subirAudioFile() {
+            const fileInput = document.getElementById('music-file-input');
+            const file = fileInput.files[0];
+            if (!file) {
+                showCustomAlert("Selecciona un archivo de audio primero.", "ATENCIÓN");
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('audio', file);
+            
+            try {
+                showCustomAlert("Subiendo archivo de música, por favor espera...", "SUBIENDO");
+                const res = await fetch('/api/audio/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('music-url-input').value = data.audio_url;
+                    showCustomAlert("Archivo de audio subido con éxito y asignado.", "SUCESO");
+                } else {
+                    const err = await res.json();
+                    showCustomAlert(err.error || "Error al subir audio.", "ERROR");
+                }
+            } catch (err) {
+                console.error(err);
+                showCustomAlert("Error de red al subir audio.", "ERROR");
+            }
+        }
+
+        async function guardarConfigMusic() {
+            const clues = [
+                document.getElementById('clue-1').value.trim(),
+                document.getElementById('clue-2').value.trim(),
+                document.getElementById('clue-3').value.trim(),
+                document.getElementById('clue-4').value.trim(),
+                document.getElementById('clue-5').value.trim(),
+            ];
+            const audioUrl = document.getElementById('music-url-input').value.trim();
+            
+            if (clues.some(c => c === "")) {
+                showCustomAlert("Completa todas las 5 pistas para continuar.", "ERROR");
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/juego/music/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ clues: clues, audio_url: audioUrl })
+                });
+                if (res.ok) {
+                    showCustomAlert("Configuración de la canción guardada con éxito.", "SUCESO");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function revelarSiguientePista() {
+            try {
+                await fetch('/api/juego/music/revelar', { method: 'POST' });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function fijarNivelPista(level) {
+            try {
+                await fetch('/api/juego/music/nivel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ level: level })
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function premiarMusicaAdivinada() {
+            const selectEl = document.getElementById('music-player-select');
+            const jid = parseInt(selectEl.value);
+            if (!jid) {
+                showCustomAlert("Primero selecciona o agrega un jugador.", "ATENCIÓN");
+                return;
+            }
+            try {
+                const res = await fetch('/api/juego/music/adivinada', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: jid })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    showCustomAlert("¡Adivinada! +" + data.puntos_asignados + " puntos asignados al jugador.", "SUCESO");
+                } else {
+                    const err = await res.json();
+                    showCustomAlert(err.error, "ERROR");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // --- ACCIONES REST DE JUEGO: AHORA CAIGO ---
+
+                async function guardarConfigAhoraCaigo() {
+            const playerA = document.getElementById('ac-player-a-select').value;
+            const playerB = document.getElementById('ac-player-b-select').value;
+            
+            if (playerA === playerB && playerA !== "") {
+                showCustomAlert("Jugador A y Jugador B no pueden ser el mismo participante.", "ERROR");
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/juego/ahoracaigo/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        player_a_id: playerA ? parseInt(playerA) : null,
+                        player_b_id: playerB ? parseInt(playerB) : null
+                    })
+                });
+                if (res.ok) {
+                    showCustomAlert("Versus guardado e inicializado en espera.", "SUCESO");
+                    fetchEstado();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function iniciarTiempoAhoraCaigo() {
+            try {
+                const res = await fetch('/api/juego/ahoracaigo/iniciar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                if (res.ok) {
+                    acTimeLeft = 30;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function revelarLetraAhoraCaigo() {
+            try {
+                await fetch('/api/juego/ahoracaigo/revelar-letra', { method: 'POST' });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function alternarTurnoAhoraCaigo() {
+            try {
+                const response = await fetch('/api/estado');
+                const state = await response.json();
+                const ac = state.ahoracaigo;
+                
+                const nextActive = (ac.active_player_id === ac.player_a_id) ? ac.player_b_id : ac.player_a_id;
+                
+                await fetch('/api/juego/ahoracaigo/iniciar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ active_player_id: nextActive })
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function registrarCorrecto() {
+            stopLocalTimer();
+            try {
+                const res = await fetch('/api/juego/ahoracaigo/correcto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ remaining_time: acTimeLeft })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    showCustomAlert(`¡CORRECTO! Asignados +${data.puntos_asignados} puntos a ${data.jugador.nombre}`, "SUCESO");
+                } else {
+                    const err = await res.json();
+                    showCustomAlert(err.error, "ERROR");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function registrarFallo() {
+            stopLocalTimer();
+            try {
+                await fetch('/api/juego/ahoracaigo/fallo', { method: 'POST' });
+                showCustomAlert("¡TIEMPO AGOTADO! Turno fallido.", "FIN DE TURNO");
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function stopLocalTimer() {
+            clearInterval(acTimer);
+            acIsTimerActive = false;
+        }
+
+        // --- ACCIONES REST DE JUEGO: LA RULETA ---
+
+        async function girarRuleta() {
+            try {
+                const res = await fetch('/api/juego/ruleta/girar', { method: 'POST' });
+                if (!res.ok) {
+                    const err = await res.json();
+                    showCustomAlert(err.error, "ERROR");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function obtenerPreguntaRuleta(nivel) {
+            try {
+                const res = await fetch('/api/juego/ruleta/pregunta', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ level: nivel })
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    showCustomAlert(err.error, "ERROR");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function premiarRuleta() {
+            try {
+                const res = await fetch('/api/juego/ruleta/premiar', { method: 'POST' });
+                if (res.ok) {
+                    const data = await res.json();
+                    showCustomAlert(`¡Bono de +${data.puntos_asignados} puntos asignado a ${data.jugador.nombre}!`, "SUCESO");
+                } else {
+                    const err = await res.json();
+                    showCustomAlert(err.error, "ERROR");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // --- ACCIONES REST DE JUEGO: ¿QUIÉN ES MÁS PROBABLE? ---
+
+        async function guardarConfigProbable() {
+            const question = document.getElementById('probable-question-input').value.trim();
+            if (!question) {
+                showCustomAlert("Ingresa la premisa para continuar.", "ERROR");
+                return;
+            }
+            try {
+                const res = await fetch('/api/juego/probable/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question })
+                });
+                if (res.ok) {
+                    showCustomAlert("Premisa de probabilidad aplicada con éxito.", "SUCESO");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function guardarGanadoresProbable() {
+            const checkedBoxes = document.querySelectorAll('#probable-checkbox-container input[type="checkbox"]:checked');
+            const ids = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+            
+            if (ids.length === 0) {
+                showCustomAlert("Debes seleccionar al menos un ganador del grupo.", "ATENCIÓN");
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/juego/probable/votar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: ids })
+                });
+                if (res.ok) {
+                    showCustomAlert("¡Ganadores guardados y premio de +20 puntos asignado!", "SUCESO");
+                    document.querySelectorAll('#probable-checkbox-container input[type="checkbox"]').forEach(cb => cb.checked = false);
+                } else {
+                    const err = await res.json();
+                    showCustomAlert(err.error, "ERROR");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+
+        // Conectar SSE Stream para sincronizar
+        function iniciarSSE() {
+            const evtSource = new EventSource("/api/stream");
+            
+            evtSource.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                renderizarEstado(data);
+            };
+
+            evtSource.onerror = function() {
+                console.log("Error en la conexión SSE, reintentando...");
+            };
+        }
+
+        // Iniciar
+        // cargarACPresetsList();
+        cargarProbablePresetsList();
+        fetchEstado();
+        iniciarSSE();
+    </script>
+</body>
+</html>

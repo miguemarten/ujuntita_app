@@ -6,26 +6,26 @@
       "puntaje_total": 0,
       "emoji": "🕹️",
       "ultimo_cambio": 0,
-      "timestamp_actualizacion": 1784511968.5051198
+      "timestamp_actualizacion": 1784514634.6296308
     },
     {
       "id": 2,
       "nombre": "JUGADOR B",
-      "puntaje_total": 140,
+      "puntaje_total": 0,
       "emoji": "🚀",
-      "ultimo_cambio": 40,
-      "timestamp_actualizacion": 1784512137.8655272
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784514634.6296308
     },
     {
       "id": 3,
       "nombre": "JUGADOR C",
-      "puntaje_total": 160,
+      "puntaje_total": 0,
       "emoji": "👽",
-      "ultimo_cambio": 40,
-      "timestamp_actualizacion": 1784512153.0636156
+      "ultimo_cambio": 0,
+      "timestamp_actualizacion": 1784514634.6296308
     }
   ],
-  "active_screen": "game_ahoracaigo",
+  "active_screen": "start",
   "score_goal": 100,
   "memorice": {
     "words": [
@@ -76,29 +76,24 @@
     "status": "idle"
   },
   "ahoracaigo": {
-    "concept": "ARREPENTIMIENTO",
-    "definition": "Cambio de mentalidad y conducta al alejarse del pecado para volverse a Dios.",
-    "displayed_word": "A R R E P E N T I M I E N T O",
+    "concept": "JESUS",
+    "definition": "El Hijo de Dios y Salvador del mundo.",
+    "displayed_word": "J E S U S",
     "player_a_id": 2,
     "player_b_id": 3,
-    "active_player_id": 2,
+    "active_player_id": 3,
     "timer_active": false,
-    "timer_start_time": 1784512153.0641472,
-    "status": "timeout",
-    "points_awarded": 40,
-    "correct_answers_count": 8,
+    "timer_start_time": 1784514348.944656,
+    "status": "idle",
+    "points_awarded": 20,
+    "correct_answers_count": 3,
     "used_concepts": [
-      "FRUTO",
-      "DAVID",
-      "DIEZMO",
-      "SANGRE",
-      "ESTRELLA",
-      "SALOMON",
-      "MATEO",
-      "JUAN",
-      "ARREPENTIMIENTO"
+      "PAN",
+      "ALTAR",
+      "PALOMA",
+      "JESUS"
     ],
-    "difficulty": "media-baja"
+    "difficulty": "facil"
   },
   "ruleta": {
     "selected_player_id": null,

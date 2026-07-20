@@ -35,6 +35,18 @@
 
 <body>
 
+    <!-- BOTÓN PANTALLA COMPLETA RETRO MINIMALISTA -->
+    <button id="fullscreen-toggle-btn" onclick="toggleFullscreen()" title="Pantalla Completa">
+        <!-- Icono entrar (cuadrado con esquinas) -->
+        <svg class="fs-icon-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter" style="width: 20px; height: 20px; display: block;">
+            <path d="M5 9V5h4M15 5h4v4M19 15v4h-4M9 19H5v-4"/>
+        </svg>
+        <!-- Icono salir (esquinas hacia adentro) -->
+        <svg class="fs-icon-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter" style="width: 20px; height: 20px; display: none;">
+            <path d="M9 5v4H5M15 5v4h4M9 19v-4H5M15 19v-4h4"/>
+        </svg>
+    </button>
+
     <!-- BANNER PARA DESBLOQUEAR AUDIO -->
     <div id="audio-unlock-banner" onclick="unlockAudio()">
         🔊 CLIC EN PANTALLA PARA ACTIVAR AUDIO/RETRO FX
@@ -806,6 +818,11 @@
                 podiumContainer.innerHTML = podiumHtml;
 
                 const listContainer = document.getElementById('scoreboard-items-list');
+                if (jugadoresOrdenados.length > 5) {
+                    listContainer.classList.add('two-columns');
+                } else {
+                    listContainer.classList.remove('two-columns');
+                }
                 listContainer.innerHTML = jugadoresOrdenados.map((j, index) => {
                     const pct = Math.min(100, Math.round((j.puntaje_total / scoreGoal) * 100));
 
@@ -1371,6 +1388,9 @@
             jugadores.forEach(j => {
                 cachedScores[j.id] = j.puntaje_total;
             });
+
+            // Ajustar escala de pantalla completa si aplica
+            adjustProjectionScale();
         }
 
         // Mostrar tarjeta de pregunta en la ruleta
@@ -1412,6 +1432,146 @@
                 console.error("Error cargando estado inicial:", err);
             }
         }
+
+        // --- LÓGICA DE PANTALLA COMPLETA Y AJUSTE DINÁMICO (NO SCROLL) ---
+
+        function isCurrentlyFullscreen() {
+            return !!(document.fullscreenElement || 
+                      document.webkitFullscreenElement || 
+                      document.mozFullScreenElement || 
+                      document.msFullscreenElement);
+        }
+
+        function toggleFullscreen() {
+            if (!isCurrentlyFullscreen()) {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) { /* Safari */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE11 */
+                    elem.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        function adjustProjectionScale() {
+            const container = document.querySelector('.projector-container');
+            if (!container) return;
+            
+            const isFullscreen = isCurrentlyFullscreen();
+            
+            if (isFullscreen) {
+                // Dimensión base de referencia
+                const targetW = 1200;
+                const targetH = 800;
+                
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                
+                // Calcular escala óptima manteniendo proporción
+                const scaleX = winW / targetW;
+                const scaleY = winH / targetH;
+                const scale = Math.min(scaleX, scaleY);
+                
+                container.style.width = targetW + 'px';
+                container.style.height = targetH + 'px';
+                container.style.transform = `scale(${scale})`;
+                container.style.transformOrigin = 'center center';
+                container.style.position = 'absolute';
+                container.style.left = '50%';
+                container.style.top = '50%';
+                container.style.margin = '0';
+                container.style.marginLeft = `-${targetW / 2}px`;
+                container.style.marginTop = `-${targetH / 2}px`;
+            } else {
+                // Limpiar estilos si no está en pantalla completa
+                container.style.width = '';
+                container.style.height = '';
+                container.style.transform = '';
+                container.style.transformOrigin = '';
+                container.style.position = '';
+                container.style.left = '';
+                container.style.top = '';
+                container.style.margin = '';
+                container.style.marginLeft = '';
+                container.style.marginTop = '';
+            }
+        }
+
+        // Detectar cambios de pantalla completa
+        function onFullscreenChange() {
+            const btn = document.getElementById('fullscreen-toggle-btn');
+            const isFullscreen = isCurrentlyFullscreen();
+            
+            if (btn) {
+                const iconEnter = btn.querySelector('.fs-icon-enter');
+                const iconExit = btn.querySelector('.fs-icon-exit');
+                
+                if (isFullscreen) {
+                    if (iconEnter) iconEnter.style.display = 'none';
+                    if (iconExit) iconExit.style.display = 'block';
+                    document.body.classList.add('fullscreen-mode');
+                } else {
+                    if (iconEnter) iconEnter.style.display = 'block';
+                    if (iconExit) iconExit.style.display = 'none';
+                    document.body.classList.remove('fullscreen-mode');
+                    document.body.style.cursor = 'default';
+                    btn.style.opacity = '1';
+                }
+            }
+            adjustProjectionScale();
+        }
+
+        document.addEventListener('fullscreenchange', onFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+        document.addEventListener('mozfullscreenchange', onFullscreenChange);
+        document.addEventListener('MSFullscreenChange', onFullscreenChange);
+
+        window.addEventListener('resize', adjustProjectionScale);
+
+        // Atajos de teclado: 'F' para alternar pantalla completa
+        document.addEventListener('keydown', function(e) {
+            if (e.key.toLowerCase() === 'f') {
+                if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                    toggleFullscreen();
+                }
+            }
+        });
+
+        // Doble clic en cualquier parte vacía para alternar pantalla completa
+        document.addEventListener('dblclick', function(e) {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('#audio-unlock-banner')) {
+                return;
+            }
+            toggleFullscreen();
+        });
+
+        // Ocultación automática de cursor y botón flotante tras 3s de inactividad
+        let mouseTimer = null;
+        function handleMouseMove() {
+            document.body.style.cursor = 'default';
+            const btn = document.getElementById('fullscreen-toggle-btn');
+            if (btn) btn.style.opacity = '1';
+            
+            clearTimeout(mouseTimer);
+            
+            if (isCurrentlyFullscreen()) {
+                mouseTimer = setTimeout(() => {
+                    document.body.style.cursor = 'none';
+                    if (btn) btn.style.opacity = '0';
+                }, 3000);
+            }
+        }
+        document.addEventListener('mousemove', handleMouseMove);
 
         // Inicializar
         cargarEstadoInicial();

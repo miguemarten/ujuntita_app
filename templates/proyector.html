@@ -106,26 +106,45 @@
                 <div class="projector-subtitle" id="memorice-status-subtitle">[ MEMORIZA LAS CASILLAS ]</div>
             </div>
 
-            <!-- Temporizador 70s -->
-            <div class="memorice-timer-container">
-                <div id="memorice-timer-fill" class="memorice-timer-bar" style="width: 100%;"></div>
-                <span class="memorice-timer-text" id="memorice-timer-text">70s</span>
+            <!-- Pantalla de Espera (Lobby) -->
+            <div id="mem-lobby-layout" style="display: none; text-align: center; width: 100%;">
+                <div class="versus-container" id="mem-lobby-players" style="margin-top: 30px; margin-bottom: 30px; gap: 15px;">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                <div class="pixel-panel accent-magenta" style="max-width: 700px; margin: 30px auto; padding: 30px; border-radius: 8px;">
+                    <div class="panel-title" style="color: var(--color-danger); font-size: 1.1rem; margin-bottom: 15px;">SALA DE ESPERA</div>
+                    <p class="pixel-blink" style="font-family: 'Press Start 2P', monospace; font-size: 0.95rem; color: var(--color-warning); line-height: 1.8; margin: 15px 0;">
+                        ¡PREPÁRENSE PARA EL MEMORICE DE CASILLAS!
+                    </p>
+                    <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 15px; font-family: 'Press Start 2P', monospace;">
+                        EL ADMINISTRADOR INICIARÁ EL JUEGO...
+                    </p>
+                </div>
             </div>
 
-            <!-- Grilla 3x3 -->
-            <div class="memorice-grid" id="memorice-grid-layout">
-                <!-- Se llena dinámicamente -->
-            </div>
+            <!-- Pantalla de Juego Activo -->
+            <div id="mem-game-layout" style="display: block; width: 100%;">
+                <!-- Temporizador 70s -->
+                <div class="memorice-timer-container">
+                    <div id="memorice-timer-fill" class="memorice-timer-bar" style="width: 100%;"></div>
+                    <span class="memorice-timer-text" id="memorice-timer-text">70s</span>
+                </div>
 
-            <!-- Panel de Turno de Participantes -->
-            <div class="memorice-players-panel" id="memorice-players-layout">
-                <!-- Se llena dinámicamente -->
-            </div>
+                <!-- Grilla 3x3 -->
+                <div class="memorice-grid" id="memorice-grid-layout">
+                    <!-- Se llena dinámicamente -->
+                </div>
 
-            <!-- Superposición de Victoria / Derrota -->
-            <div id="memorice-overlay" style="display: none; text-align: center; margin-top: 25px;">
-                <span id="memorice-overlay-text" class="arcade-font pixel-blink"
-                    style="font-size: 1.8rem;">ESTADO</span>
+                <!-- Panel de Turno de Participantes -->
+                <div class="memorice-players-panel" id="memorice-players-layout">
+                    <!-- Se llena dinámicamente -->
+                </div>
+
+                <!-- Superposición de Victoria / Derrota -->
+                <div id="memorice-overlay" style="display: none; text-align: center; margin-top: 25px;">
+                    <span id="memorice-overlay-text" class="arcade-font pixel-blink"
+                        style="font-size: 1.8rem;">ESTADO</span>
+                </div>
             </div>
         </div>
 
@@ -136,39 +155,62 @@
                 <div class="projector-subtitle">[ ADIVINA LA CANCION CON EL MINIMO DE PISTAS ]</div>
             </div>
 
-            <div class="cassette-player">
-                <div class="cassette-label">RETRO CASSETTE RECORDER</div>
-                <div class="cassette-window">
-                    <div class="spool" id="spool-left"></div>
-                    <div class="spool" id="spool-right"></div>
+            <!-- Pantalla de Espera (Lobby) -->
+            <div id="music-lobby-layout" style="display: none; text-align: center; width: 100%;">
+                <div class="cassette-player" style="margin: 20px auto; transform: scale(0.95); pointer-events: none;">
+                    <div class="cassette-label">RETRO CASSETTE RECORDER</div>
+                    <div class="cassette-window">
+                        <div class="spool"></div>
+                        <div class="spool"></div>
+                    </div>
                 </div>
-
-                <div class="led-group">
-                    <div class="led-indicator">
-                        <div class="led-light" id="led-1"></div>
-                        <span class="led-text">P1 (50)</span>
-                    </div>
-                    <div class="led-indicator">
-                        <div class="led-light" id="led-2"></div>
-                        <span class="led-text">P2 (40)</span>
-                    </div>
-                    <div class="led-indicator">
-                        <div class="led-light" id="led-3"></div>
-                        <span class="led-text">P3 (30)</span>
-                    </div>
-                    <div class="led-indicator">
-                        <div class="led-light" id="led-4"></div>
-                        <span class="led-text">P4 (20)</span>
-                    </div>
-                    <div class="led-indicator">
-                        <div class="led-light" id="led-5"></div>
-                        <span class="led-text">P5 (10)</span>
-                    </div>
+                <div class="pixel-panel accent-cyan" style="max-width: 700px; margin: 30px auto; padding: 30px; border-radius: 8px;">
+                    <div class="panel-title" style="color: var(--color-info); font-size: 1.1rem; margin-bottom: 15px;">SALA DE ESPERA</div>
+                    <p class="pixel-blink" style="font-family: 'Press Start 2P', monospace; font-size: 0.95rem; color: var(--color-warning); line-height: 1.8; margin: 15px 0;">
+                        ¡PREPÁRENSE PARA EL DESAFÍO MUSICAL!
+                    </p>
+                    <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 15px; font-family: 'Press Start 2P', monospace;">
+                        EL OPERADOR REVELARÁ LA PRIMERA PISTA...
+                    </p>
                 </div>
             </div>
 
-            <div class="music-clues-container" id="music-clues-layout">
-                <!-- Se llena dinámicamente -->
+            <!-- Pantalla de Juego Activo -->
+            <div id="music-game-layout" style="display: block; width: 100%;">
+                <div class="cassette-player">
+                    <div class="cassette-label">RETRO CASSETTE RECORDER</div>
+                    <div class="cassette-window">
+                        <div class="spool" id="spool-left"></div>
+                        <div class="spool" id="spool-right"></div>
+                    </div>
+
+                    <div class="led-group">
+                        <div class="led-indicator">
+                            <div class="led-light" id="led-1"></div>
+                            <span class="led-text">P1 (50)</span>
+                        </div>
+                        <div class="led-indicator">
+                            <div class="led-light" id="led-2"></div>
+                            <span class="led-text">P2 (40)</span>
+                        </div>
+                        <div class="led-indicator">
+                            <div class="led-light" id="led-3"></div>
+                            <span class="led-text">P3 (30)</span>
+                        </div>
+                        <div class="led-indicator">
+                            <div class="led-light" id="led-4"></div>
+                            <span class="led-text">P4 (20)</span>
+                        </div>
+                        <div class="led-indicator">
+                            <div class="led-light" id="led-5"></div>
+                            <span class="led-text">P5 (10)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="music-clues-container" id="music-clues-layout">
+                    <!-- Se llena dinámicamente -->
+                </div>
             </div>
 
             <audio id="music-audio-element" style="display: none;"></audio>
@@ -242,18 +284,42 @@
                 <div class="projector-subtitle">[ DESCUBRE QUIÉN RESPONDE LA PREGUNTA ]</div>
             </div>
 
-            <!-- Spinner Visual de Emojis/Jugadores -->
-            <div class="ruleta-spinner-container">
-                <div class="spinner-marker"></div>
-                <div class="ruleta-spinner-track" id="ruleta-track">
-                    <!-- Se llena dinámicamente -->
+            <!-- Pantalla de Espera (Lobby) -->
+            <div id="ruleta-lobby-layout" style="display: none; text-align: center; width: 100%;">
+                <div class="pixel-panel accent-yellow" style="max-width: 800px; margin: 20px auto; padding: 25px;">
+                    <div class="panel-title" style="color: var(--color-warning); font-size: 1.1rem; margin-bottom: 15px;">SALA DE ESPERA</div>
+                    <p class="pixel-blink" style="font-family: 'Press Start 2P', monospace; font-size: 0.9rem; color: #fff; line-height: 1.6;">
+                        ¡PREPÁRENSE PARA EL GIRO DE LA RULETA!
+                    </p>
+                    <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 15px; font-family: 'Press Start 2P', monospace;">
+                        TODOS PARTICIPAN EN EL SORTEO...
+                    </p>
+                </div>
+                
+                <!-- Marquesina de participantes inscritos -->
+                <div class="pixel-panel accent-white" style="max-width: 800px; margin: 20px auto;">
+                    <div class="panel-title" style="color: #fff; font-size: 0.8rem; margin-bottom: 15px;">JUGADORES EN EL BOMBO</div>
+                    <div id="ruleta-lobby-players-grid" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; padding: 10px 0;">
+                        <!-- Se llena dinámicamente -->
+                    </div>
                 </div>
             </div>
 
-            <!-- Tarjeta de Pregunta Revelada -->
-            <div id="ruleta-question-card" class="card-question" style="display: none;">
-                <div class="card-question-title" id="ruleta-card-title">NIVEL VERDE</div>
-                <div class="card-question-text" id="ruleta-card-text">Pregunta...</div>
+            <!-- Pantalla de Juego Activo -->
+            <div id="ruleta-game-layout" style="display: block; width: 100%;">
+                <!-- Spinner Visual de Emojis/Jugadores -->
+                <div class="ruleta-spinner-container">
+                    <div class="spinner-marker"></div>
+                    <div class="ruleta-spinner-track" id="ruleta-track">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Tarjeta de Pregunta Revelada -->
+                <div id="ruleta-question-card" class="card-question" style="display: none;">
+                    <div class="card-question-title" id="ruleta-card-title">NIVEL VERDE</div>
+                    <div class="card-question-text" id="ruleta-card-text">Pregunta...</div>
+                </div>
             </div>
         </div>
 
@@ -261,17 +327,36 @@
         <div id="screen-game_probable" class="projector-screen">
             <div class="projector-header">
                 <h1 class="projector-title">¿QUIÉN ES MÁS PROBABLE QUE...?</h1>
-                <div class="projector-subtitle">[ APUNTA AL JUGADOR MÁS VOTADO POR EL GRUPO ]</div>
+                <div class="projector-subtitle" id="probable-status-subtitle">[ APUNTA AL JUGADOR MÁS VOTADO POR EL GRUPO ]</div>
             </div>
 
-            <div class="probable-question-card">
-                <p class="probable-question-text" id="probable-question-prompt">
-                    ¿Cargando premisa...?
-                </p>
+            <!-- Pantalla de Espera (Lobby) -->
+            <div id="probable-lobby-layout" style="display: none; text-align: center; width: 100%;">
+                <div class="pixel-panel accent-yellow" style="max-width: 700px; margin: 30px auto; padding: 30px; border-radius: 8px;">
+                    <div class="panel-title" style="color: var(--color-warning); font-size: 1.1rem; margin-bottom: 15px;">SALA DE ESPERA</div>
+                    <p class="pixel-blink" style="font-family: 'Press Start 2P', monospace; font-size: 2.2rem; color: var(--color-danger); line-height: 1.8; margin: 20px 0;">
+                        ❓
+                    </p>
+                    <p style="font-size: 0.95rem; color: #fff; line-height: 1.8; font-family: 'Press Start 2P', monospace; margin: 15px 0;">
+                        ¿QUIÉN SERÁ EL ELEGIDO?
+                    </p>
+                    <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 15px; font-family: 'Press Start 2P', monospace;">
+                        EL ADMINISTRADOR CARGARÁ LA PREMISA...
+                    </p>
+                </div>
             </div>
 
-            <div class="probable-players-grid" id="probable-players-grid-layout">
-                <!-- Se llena dinámicamente -->
+            <!-- Pantalla de Juego Activo -->
+            <div id="probable-game-layout" style="display: block; width: 100%;">
+                <div class="probable-question-card">
+                    <p class="probable-question-text" id="probable-question-prompt">
+                        ¿Cargando premisa...?
+                    </p>
+                </div>
+
+                <div class="probable-players-grid" id="probable-players-grid-layout">
+                    <!-- Se llena dinámicamente -->
+                </div>
             </div>
         </div>
 
@@ -837,122 +922,150 @@
             // 🧩 JUEGO: MEMORICE DE PALABRAS (REDISEÑADO)
             // ──────────────────────────────────────────────
             if (activeScreen === 'game_memorice') {
-                const memoriceGrid = document.getElementById('memorice-grid-layout');
-                const words = state.memorice.words || [];
                 const status = state.memorice.status || 'idle';
+                const lobbyLayout = document.getElementById('mem-lobby-layout');
+                const gameLayout = document.getElementById('mem-game-layout');
 
-                const revealed = state.memorice.revealed_indices || [];
-                const errIdx = state.memorice.error_index;
+                if (status === 'idle') {
+                    if (lobbyLayout) lobbyLayout.style.display = 'block';
+                    if (gameLayout) gameLayout.style.display = 'none';
 
-                // 1. Renderizar grilla de 9 casillas
-                memoriceGrid.innerHTML = words.map((word, idx) => {
-                    let cardClass = 'memorice-card';
-                    if (status === 'memorizing') {
-                        cardClass += ' temp-revealed';
-                    } else if (status === 'playing') {
-                        if (revealed.includes(idx)) {
-                            cardClass += ' revealed';
-                        } else if (errIdx === idx) {
-                            cardClass += ' error';
+                    const pids = state.memorice.players_ids || [];
+                    const lobbyPlayersContainer = document.getElementById('mem-lobby-players');
+                    if (lobbyPlayersContainer) {
+                        if (pids.length > 0) {
+                            lobbyPlayersContainer.innerHTML = pids.map(pid => {
+                                const playerObj = state.jugadores.find(j => j.id === pid);
+                                if (!playerObj) return '';
+                                return `<div class="versus-player" style="font-size: 1.1rem; padding: 12px 24px; min-width: 200px;">${playerObj.emoji} ${playerObj.nombre}</div>`;
+                            }).join('');
+                        } else {
+                            lobbyPlayersContainer.innerHTML = `
+                                <div style="font-family: 'Press Start 2P', monospace; font-size: 0.8rem; color: var(--color-text-muted);">
+                                    SIN INTEGRANTES CONFIGURADOS
+                                </div>
+                            `;
                         }
-                    } else if (status === 'completed') {
-                        cardClass += ' revealed';
-                    }
-
-                    return `
-                        <div class="${cardClass}" id="mem-card-${idx}">
-                            <span class="card-number">${idx + 1}</span>
-                            <span class="card-word">${word}</span>
-                        </div>
-                    `;
-                }).join('');
-
-                // 2. Play FX de error al cambiar
-                if (errIdx !== -1 && errIdx !== lastErrorIndex) {
-                    playRetroSound('hit');
-                }
-                lastErrorIndex = errIdx;
-
-                // 3. Sincronizar Subtítulo
-                const subtitle = document.getElementById('memorice-status-subtitle');
-                if (status === 'memorizing') {
-                    subtitle.innerText = '[ ¡MEMORIZA LAS CASILLAS! ]';
-                } else if (status === 'playing') {
-                    subtitle.innerText = '[ ¡ADIVINA LA CASILLA EN EL ORDEN CORRECTO! ]';
-                } else if (status === 'completed') {
-                    subtitle.innerText = '[ ¡FELICIDADES! ¡LOGRARON COMPLETAR EL MEMORICE! ]';
-                } else if (status === 'gameover') {
-                    subtitle.innerText = '[ ¡TIEMPO AGOTADO! JUEGO TERMINADO ]';
-                } else {
-                    subtitle.innerText = '[ ESPERANDO CONFIGURACIÓN DE RONDA... ]';
-                }
-
-                // 4. Temporizador Sincronizado de 70s
-                if (state.memorice.timer_active) {
-                    if (!memIsActiveTimer || memLastStartTime !== state.memorice.timer_start_time) {
-                        memIsActiveTimer = true;
-                        memLastStartTime = state.memorice.timer_start_time;
-                        startRedesignedMemTimer(state.memorice.timer_start_time);
                     }
                 } else {
-                    clearInterval(memTimerInterval);
-                    memIsActiveTimer = false;
+                    if (lobbyLayout) lobbyLayout.style.display = 'none';
+                    if (gameLayout) gameLayout.style.display = 'block';
 
-                    const bar = document.getElementById('memorice-timer-fill');
-                    const text = document.getElementById('memorice-timer-text');
+                    const memoriceGrid = document.getElementById('memorice-grid-layout');
+                    const words = state.memorice.words || [];
+                    const revealed = state.memorice.revealed_indices || [];
+                    const errIdx = state.memorice.error_index;
 
-                    if (status === "completed") {
-                        bar.style.width = "100%";
-                        bar.className = 'memorice-timer-bar';
-                        text.innerText = "COMPLETADO";
-                    } else if (status === "gameover") {
-                        bar.style.width = "0%";
-                        bar.className = 'memorice-timer-bar danger';
-                        text.innerText = "TIEMPO AGOTADO";
-                    } else {
-                        bar.style.width = "100%";
-                        bar.className = 'memorice-timer-bar';
-                        text.innerText = "70s";
-                    }
-                }
+                    // 1. Renderizar grilla de 9 casillas
+                    memoriceGrid.innerHTML = words.map((word, idx) => {
+                        let cardClass = 'memorice-card';
+                        if (status === 'memorizing') {
+                            cardClass += ' temp-revealed';
+                        } else if (status === 'playing') {
+                            if (revealed.includes(idx)) {
+                                cardClass += ' revealed';
+                            } else if (errIdx === idx) {
+                                cardClass += ' error';
+                            }
+                        } else if (status === 'completed') {
+                            cardClass += ' revealed';
+                        }
 
-                // 5. Panel de Turnos
-                const playersLayout = document.getElementById('memorice-players-layout');
-                const pids = state.memorice.players_ids || [];
-                const activePlayerIdx = state.memorice.active_player_index || 0;
-
-                if (pids.length > 0) {
-                    playersLayout.innerHTML = pids.map((pid, idx) => {
-                        const playerObj = state.jugadores.find(j => j.id === pid);
-                        if (!playerObj) return '';
-                        const isActive = idx === activePlayerIdx && status === 'playing';
                         return `
-                            <div class="memorice-player-tag ${isActive ? 'active' : ''}">
-                                ${isActive ? '▶ ' : ''}${playerObj.emoji} ${playerObj.nombre.toUpperCase()}
+                            <div class="${cardClass}" id="mem-card-${idx}">
+                                <span class="card-number">${idx + 1}</span>
+                                <span class="card-word">${word}</span>
                             </div>
                         `;
                     }).join('');
-                } else {
-                    playersLayout.innerHTML = `
-                        <div style="font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: var(--color-text-muted);">
-                            SIN INTEGRANTES CONFIGURADOS
-                        </div>
-                    `;
-                }
 
-                // 6. Overlays de estado
-                const overlay = document.getElementById('memorice-overlay');
-                const overlayText = document.getElementById('memorice-overlay-text');
-                if (status === 'completed') {
-                    overlay.style.display = 'block';
-                    overlayText.innerText = '🔥 ¡VICTORIA! COMPLETO 🔥';
-                    overlayText.style.color = 'var(--color-success)';
-                } else if (status === 'gameover') {
-                    overlay.style.display = 'block';
-                    overlayText.innerText = '❌ ¡GAME OVER! ❌';
-                    overlayText.style.color = 'var(--color-danger)';
-                } else {
-                    overlay.style.display = 'none';
+                    // 2. Play FX de error al cambiar
+                    if (errIdx !== -1 && errIdx !== lastErrorIndex) {
+                        playRetroSound('hit');
+                    }
+                    lastErrorIndex = errIdx;
+
+                    // 3. Sincronizar Subtítulo
+                    const subtitle = document.getElementById('memorice-status-subtitle');
+                    if (status === 'memorizing') {
+                        subtitle.innerText = '[ ¡MEMORIZA LAS CASILLAS! ]';
+                    } else if (status === 'playing') {
+                        subtitle.innerText = '[ ¡ADIVINA LA CASILLA EN EL ORDEN CORRECTO! ]';
+                    } else if (status === 'completed') {
+                        subtitle.innerText = '[ ¡FELICIDADES! ¡LOGRARON COMPLETAR EL MEMORICE! ]';
+                    } else if (status === 'gameover') {
+                        subtitle.innerText = '[ ¡TIEMPO AGOTADO! JUEGO TERMINADO ]';
+                    } else {
+                        subtitle.innerText = '[ ESPERANDO CONFIGURACIÓN DE RONDA... ]';
+                    }
+
+                    // 4. Temporizador Sincronizado de 70s
+                    if (state.memorice.timer_active) {
+                        if (!memIsActiveTimer || memLastStartTime !== state.memorice.timer_start_time) {
+                            memIsActiveTimer = true;
+                            memLastStartTime = state.memorice.timer_start_time;
+                            startRedesignedMemTimer(state.memorice.timer_start_time);
+                        }
+                    } else {
+                        clearInterval(memTimerInterval);
+                        memIsActiveTimer = false;
+
+                        const bar = document.getElementById('memorice-timer-fill');
+                        const text = document.getElementById('memorice-timer-text');
+
+                        if (status === "completed") {
+                            bar.style.width = "100%";
+                            bar.className = 'memorice-timer-bar';
+                            text.innerText = "COMPLETADO";
+                        } else if (status === "gameover") {
+                            bar.style.width = "0%";
+                            bar.className = 'memorice-timer-bar danger';
+                            text.innerText = "TIEMPO AGOTADO";
+                        } else {
+                            bar.style.width = "100%";
+                            bar.className = 'memorice-timer-bar';
+                            text.innerText = "70s";
+                        }
+                    }
+
+                    // 5. Panel de Turnos
+                    const playersLayout = document.getElementById('memorice-players-layout');
+                    const pids = state.memorice.players_ids || [];
+                    const activePlayerIdx = state.memorice.active_player_index || 0;
+
+                    if (pids.length > 0) {
+                        playersLayout.innerHTML = pids.map((pid, idx) => {
+                            const playerObj = state.jugadores.find(j => j.id === pid);
+                            if (!playerObj) return '';
+                            const isActive = idx === activePlayerIdx && status === 'playing';
+                            return `
+                                <div class="memorice-player-tag ${isActive ? 'active' : ''}">
+                                    ${isActive ? '▶ ' : ''}${playerObj.emoji} ${playerObj.nombre.toUpperCase()}
+                                </div>
+                            `;
+                        }).join('');
+                    } else {
+                        playersLayout.innerHTML = `
+                            <div style="font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: var(--color-text-muted);">
+                                SIN INTEGRANTES CONFIGURADOS
+                              </div>
+                        `;
+                    }
+
+                    // 6. Overlays de estado
+                    const overlay = document.getElementById('memorice-overlay');
+                    const overlayText = document.getElementById('memorice-overlay-text');
+                    if (status === 'completed') {
+                        overlay.style.display = 'block';
+                        overlayText.innerText = '🔥 ¡VICTORIA! COMPLETO 🔥';
+                        overlayText.style.color = 'var(--color-success)';
+                    } else if (status === 'gameover') {
+                        overlay.style.display = 'block';
+                        overlayText.innerText = '❌ ¡GAME OVER! ❌';
+                        overlayText.style.color = 'var(--color-danger)';
+                    } else {
+                        overlay.style.display = 'none';
+                    }
                 }
             }
 
@@ -960,54 +1073,66 @@
             // 🎵 JUEGO: PISTA MUSICAL
             // ──────────────────────────────────────────────
             if (activeScreen === 'game_music') {
-                const cluesLayout = document.getElementById('music-clues-layout');
-                const clues = state.music.clues || [];
-                const revealedLevel = state.music.revealed_level || 0;
-                const audioUrl = state.music.audio_url || "";
+                const musicStatus = state.music.status || 'idle';
+                const lobbyLayout = document.getElementById('music-lobby-layout');
+                const gameLayout = document.getElementById('music-game-layout');
 
-                const audioEl = document.getElementById('music-audio-element');
-                if (audioUrl) {
-                    const fullUrl = window.location.origin + audioUrl;
-                    if (audioEl.src !== fullUrl && !audioEl.src.endsWith(audioUrl)) {
-                        audioEl.src = audioUrl;
-                        audioEl.load();
-                    }
+                if (musicStatus === 'idle') {
+                    if (lobbyLayout) lobbyLayout.style.display = 'block';
+                    if (gameLayout) gameLayout.style.display = 'none';
                 } else {
-                    audioEl.src = "";
-                }
+                    if (lobbyLayout) lobbyLayout.style.display = 'none';
+                    if (gameLayout) gameLayout.style.display = 'block';
 
-                for (let l = 1; l <= 5; l++) {
-                    const led = document.getElementById(`led-${l}`);
-                    if (led) {
-                        led.className = 'led-light';
-                        if (revealedLevel >= l) {
-                            led.classList.add(`active-${l}`);
+                    const cluesLayout = document.getElementById('music-clues-layout');
+                    const clues = state.music.clues || [];
+                    const revealedLevel = state.music.revealed_level || 0;
+                    const audioUrl = state.music.audio_url || "";
+
+                    const audioEl = document.getElementById('music-audio-element');
+                    if (audioUrl) {
+                        const fullUrl = window.location.origin + audioUrl;
+                        if (audioEl.src !== fullUrl && !audioEl.src.endsWith(audioUrl)) {
+                            audioEl.src = audioUrl;
+                            audioEl.load();
+                        }
+                    } else {
+                        audioEl.src = "";
+                    }
+
+                    for (let l = 1; l <= 5; l++) {
+                        const led = document.getElementById(`led-${l}`);
+                        if (led) {
+                            led.className = 'led-light';
+                            if (revealedLevel >= l) {
+                                led.classList.add(`active-${l}`);
+                            }
                         }
                     }
+
+                    cluesLayout.innerHTML = clues.map((clue, idx) => {
+                        const levelRequired = idx + 1;
+                        const isRevealed = revealedLevel >= levelRequired;
+                        let clueText = isRevealed ? clue : "[ PISTA BLOQUEADA ]";
+                        return `
+                            <div class="music-clue-item ${isRevealed ? 'revealed' : ''}">
+                                <span class="music-clue-number">PISTA ${levelRequired} (${60 - (levelRequired * 10)} PTS)</span>
+                                <span class="music-clue-text">${clueText}</span>
+                            </div>
+                        `;
+                    }).join('');
+
+                    if (revealedLevel === 1 && lastRevealedLevel !== 1) {
+                        reproduceUnSegundoAudio();
+                    }
+
+                    if (revealedLevel === 0) {
+                        document.getElementById('spool-left').className = 'spool';
+                        document.getElementById('spool-right').className = 'spool';
+                    }
+
+                    lastRevealedLevel = revealedLevel;
                 }
-
-                cluesLayout.innerHTML = clues.map((clue, idx) => {
-                    const levelRequired = idx + 1;
-                    const isRevealed = revealedLevel >= levelRequired;
-                    let clueText = isRevealed ? clue : "[ PISTA BLOQUEADA ]";
-                    return `
-                        <div class="music-clue-item ${isRevealed ? 'revealed' : ''}">
-                            <span class="music-clue-number">PISTA ${levelRequired} (${60 - (levelRequired * 10)} PTS)</span>
-                            <span class="music-clue-text">${clueText}</span>
-                        </div>
-                    `;
-                }).join('');
-
-                if (revealedLevel === 1 && lastRevealedLevel !== 1) {
-                    reproduceUnSegundoAudio();
-                }
-
-                if (revealedLevel === 0) {
-                    document.getElementById('spool-left').className = 'spool';
-                    document.getElementById('spool-right').className = 'spool';
-                }
-
-                lastRevealedLevel = revealedLevel;
             }
 
             // ──────────────────────────────────────────────
@@ -1123,54 +1248,79 @@
             // ──────────────────────────────────────────────
             if (activeScreen === 'game_ruleta') {
                 const ru = state.ruleta;
-                const track = document.getElementById('ruleta-track');
-                const questionCard = document.getElementById('ruleta-question-card');
+                const lobbyLayout = document.getElementById('ruleta-lobby-layout');
+                const gameLayout = document.getElementById('ruleta-game-layout');
 
-                const spinTrigger = ru.spin_trigger || 0;
-                if (spinTrigger > ruLastSpinTrigger) {
-                    ruLastSpinTrigger = spinTrigger;
-                    ruIsSpinning = true;
-                    animarGiroRuleta(state, () => {
-                        ruIsSpinning = false;
-                        if (state.ruleta.status === "selected" || state.ruleta.status === "answered") {
-                            mostrarPreguntaRuleta(state);
-                        }
-                    });
-                }
+                if (ru.status === 'idle') {
+                    if (lobbyLayout) lobbyLayout.style.display = 'block';
+                    if (gameLayout) gameLayout.style.display = 'none';
 
-                if (!ruIsSpinning) {
-                    if (ru.selected_player_id) {
-                        if (track.innerHTML === "") {
-                            const selPlayer = state.jugadores.find(j => j.id === ru.selected_player_id);
-                            if (selPlayer) {
-                                track.innerHTML = `
-                                    <div class="spinner-card selected">
-                                        <span style="font-size: 2.2rem;">${selPlayer.emoji}</span>
-                                        <span style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: #fff;">
-                                            ${selPlayer.nombre.toUpperCase()}
-                                        </span>
-                                    </div>
-                                `;
-                                track.style.transition = 'none';
-                                track.style.left = '50%';
-                                track.style.transform = 'translateX(-50%)';
-                            }
-                        }
-
-                        if (ru.status === "selected" || ru.status === "answered") {
-                            mostrarPreguntaRuleta(state);
+                    const lobbyGrid = document.getElementById('ruleta-lobby-players-grid');
+                    if (lobbyGrid) {
+                        if (jugadores.length > 0) {
+                            lobbyGrid.innerHTML = jugadores.map(j => `
+                                <div style="display: flex; flex-direction: column; align-items: center; background: var(--color-panel); border: 2px solid var(--color-border-grey); padding: 10px; min-width: 90px; box-shadow: 2px 2px 0 var(--shadow-color);">
+                                    <span style="font-size: 1.8rem;">${j.emoji}</span>
+                                    <span style="font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: #fff; margin-top: 5px;">${j.nombre.toUpperCase()}</span>
+                                </div>
+                            `).join('');
                         } else {
+                            lobbyGrid.innerHTML = `<span style="font-family: 'Press Start 2P', monospace; font-size: 0.75rem; color: var(--color-text-muted);">SIN PARTICIPANTES</span>`;
+                        }
+                    }
+                } else {
+                    if (lobbyLayout) lobbyLayout.style.display = 'none';
+                    if (gameLayout) gameLayout.style.display = 'block';
+
+                    const track = document.getElementById('ruleta-track');
+                    const questionCard = document.getElementById('ruleta-question-card');
+
+                    const spinTrigger = ru.spin_trigger || 0;
+                    if (spinTrigger > ruLastSpinTrigger) {
+                        ruLastSpinTrigger = spinTrigger;
+                        ruIsSpinning = true;
+                        animarGiroRuleta(state, () => {
+                            ruIsSpinning = false;
+                            if (state.ruleta.status === "selected" || state.ruleta.status === "answered") {
+                                mostrarPreguntaRuleta(state);
+                            }
+                        });
+                    }
+
+                    if (!ruIsSpinning) {
+                        if (ru.selected_player_id) {
+                            if (track.innerHTML === "" || track.innerHTML.includes("ESPERANDO GIRO")) {
+                                const selPlayer = state.jugadores.find(j => j.id === ru.selected_player_id);
+                                if (selPlayer) {
+                                    track.innerHTML = `
+                                        <div class="spinner-card selected">
+                                            <span style="font-size: 2.2rem;">${selPlayer.emoji}</span>
+                                            <span style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: #fff;">
+                                                ${selPlayer.nombre.toUpperCase()}
+                                            </span>
+                                        </div>
+                                    `;
+                                    track.style.transition = 'none';
+                                    track.style.left = '50%';
+                                    track.style.transform = 'translateX(-50%)';
+                                }
+                            }
+
+                            if (ru.status === "selected" || ru.status === "answered") {
+                                mostrarPreguntaRuleta(state);
+                            } else {
+                                questionCard.style.display = "none";
+                            }
+                        } else {
+                            track.innerHTML = `
+                                <div style="font-family: 'Press Start 2P', monospace; font-size: 0.8rem; color: var(--color-text-muted);">
+                                    ESPERANDO GIRO...
+                                </div>
+                            `;
+                            track.style.left = '50%';
+                            track.style.transform = 'translateX(-50%)';
                             questionCard.style.display = "none";
                         }
-                    } else {
-                        track.innerHTML = `
-                            <div style="font-family: 'Press Start 2P', monospace; font-size: 0.8rem; color: var(--color-text-muted);">
-                                ESPERANDO GIRO...
-                            </div>
-                        `;
-                        track.style.left = '50%';
-                        track.style.transform = 'translateX(-50%)';
-                        questionCard.style.display = "none";
                     }
                 }
             }
@@ -1180,29 +1330,40 @@
             // ──────────────────────────────────────────────
             if (activeScreen === 'game_probable') {
                 const pr = state.probable;
-                document.getElementById('probable-question-prompt').innerText = pr.question || "¿Quién es más probable...?";
+                const lobbyLayout = document.getElementById('probable-lobby-layout');
+                const gameLayout = document.getElementById('probable-game-layout');
 
-                const gridLayout = document.getElementById('probable-players-grid-layout');
-                const winners = pr.winners_ids || [];
+                if (pr.status === 'idle') {
+                    if (lobbyLayout) lobbyLayout.style.display = 'block';
+                    if (gameLayout) gameLayout.style.display = 'none';
+                } else {
+                    if (lobbyLayout) lobbyLayout.style.display = 'none';
+                    if (gameLayout) gameLayout.style.display = 'block';
 
-                gridLayout.innerHTML = state.jugadores.map(j => {
-                    const isWinner = winners.includes(j.id);
-                    return `
-                        <div class="probable-player-card ${isWinner ? 'winner' : ''}">
-                            ${isWinner ? '<span class="winner-crown">👑</span>' : ''}
-                            <span style="font-size: 2.5rem;">${j.emoji}</span>
-                            <span style="font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: #fff; margin-top: 5px;">
-                                ${j.nombre.toUpperCase()}
-                            </span>
-                            <span style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: var(--color-warning); margin-top: 5px;">
-                                ${j.puntaje_total} PTS
-                            </span>
-                        </div>
-                    `;
-                }).join('');
+                    document.getElementById('probable-question-prompt').innerText = pr.question || "¿Quién es más probable...?";
 
-                if (winners.length > 0) {
-                    playRetroSound('coin');
+                    const gridLayout = document.getElementById('probable-players-grid-layout');
+                    const winners = pr.winners_ids || [];
+
+                    gridLayout.innerHTML = state.jugadores.map(j => {
+                        const isWinner = winners.includes(j.id);
+                        return `
+                            <div class="probable-player-card ${isWinner ? 'winner' : ''}">
+                                ${isWinner ? '<span class="winner-crown">👑</span>' : ''}
+                                <span style="font-size: 2.5rem;">${j.emoji}</span>
+                                <span style="font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: #fff; margin-top: 5px;">
+                                    ${j.nombre.toUpperCase()}
+                                </span>
+                                <span style="font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: var(--color-warning); margin-top: 5px;">
+                                    ${j.puntaje_total} PTS
+                                </span>
+                            </div>
+                        `;
+                    }).join('');
+
+                    if (winners.length > 0) {
+                        playRetroSound('coin');
+                    }
                 }
             }
 

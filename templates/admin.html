@@ -475,8 +475,11 @@
                             <button onclick="cambiarPantalla('game_ruleta')" class="pixel-btn pixel-btn-info" style="width: 100%; margin-bottom: 10px; font-size: 0.65rem;">
                                 CARGAR PANTALLA EN PROYECTOR
                             </button>
-                            <button onclick="girarRuleta()" class="pixel-btn pixel-btn-success" style="width: 100%; padding: 15px 10px; font-size: 0.85rem;">
+                            <button onclick="girarRuleta()" class="pixel-btn pixel-btn-success" style="width: 100%; padding: 15px 10px; font-size: 0.85rem; margin-bottom: 10px;">
                                 🎡 GIRAR RULETA (ELEGIR JOVEN)
+                            </button>
+                            <button onclick="reiniciarRuletaLobby()" class="pixel-btn pixel-btn-warning" style="width: 100%; padding: 10px 10px; font-size: 0.7rem;">
+                                🔄 VOLVER AL LOBBY / REINICIAR
                             </button>
                         </div>
                         
@@ -568,6 +571,9 @@
                         <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                             <button onclick="cambiarPantalla('game_probable')" class="pixel-btn pixel-btn-info" style="flex: 1; font-size: 0.65rem; padding: 10px 5px;">
                                 CARGAR PANTALLA
+                            </button>
+                            <button onclick="iniciarJuegoProbable()" class="pixel-btn pixel-btn-success" style="flex: 1; font-size: 0.65rem; padding: 10px 5px;">
+                                🚀 INICIAR / REVELAR PREMISA
                             </button>
                         </div>
                         
@@ -1492,6 +1498,20 @@
             }
         }
 
+        async function reiniciarRuletaLobby() {
+            try {
+                const res = await fetch('/api/juego/ruleta/reset', { method: 'POST' });
+                if (res.ok) {
+                    showCustomAlert("Ruleta restablecida al lobby de espera.", "SUCESO");
+                } else {
+                    const err = await res.json();
+                    showCustomAlert(err.error, "ERROR");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
         // --- ACCIONES REST DE JUEGO: ¿QUIÉN ES MÁS PROBABLE? ---
 
         async function guardarConfigProbable() {
@@ -1540,6 +1560,21 @@
                 console.error(err);
             }
         }
+
+        async function iniciarJuegoProbable() {
+            try {
+                const res = await fetch('/api/juego/probable/iniciar', { method: 'POST' });
+                if (res.ok) {
+                    showCustomAlert("Premisa revelada e inicio del juego.", "SUCESO");
+                } else {
+                    const err = await res.json();
+                    showCustomAlert(err.error, "ERROR");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
 
 
         // Cargar presets de Memorice al iniciar

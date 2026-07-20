@@ -170,7 +170,8 @@ estado_juego = {
             "Nombre oculto (modo ahorcado)"
         ],
         "revealed_level": 0,
-        "audio_url": ""
+        "audio_url": "",
+        "status": "idle"
     },
 
     # Módulo Ahora Caigo (Conceptos y Definiciones en Versus 1v1)
@@ -200,7 +201,8 @@ estado_juego = {
     # Módulo ¿Quién es más probable que...?
     "probable": {
         "question": "¿Quién es más probable que se quede dormido orando?",
-        "winners_ids": []
+        "winners_ids": [],
+        "status": "idle"
     }
 }
 
@@ -428,6 +430,7 @@ def reiniciar_juego():
             j["timestamp_actualizacion"] = time.time()
         estado_juego["active_screen"] = "start"
         estado_juego["music"]["revealed_level"] = 0
+        estado_juego["music"]["status"] = "idle"
         estado_juego["ahoracaigo"]["status"] = "idle"
         estado_juego["ahoracaigo"]["timer_active"] = False
         
@@ -440,6 +443,7 @@ def reiniciar_juego():
         estado_juego["ruleta"]["status"] = "idle"
         
         estado_juego["probable"]["winners_ids"] = []
+        estado_juego["probable"]["status"] = "idle"
         estado_juego["memorice"]["status"] = "idle"
         estado_juego["memorice"]["timer_active"] = False
         guardar_datos()
@@ -453,6 +457,7 @@ def limpiar_juego():
         estado_juego["active_screen"] = "start"
         estado_juego["music"]["revealed_level"] = 0
         estado_juego["music"]["audio_url"] = ""
+        estado_juego["music"]["status"] = "idle"
         estado_juego["ahoracaigo"]["status"] = "idle"
         estado_juego["ahoracaigo"]["timer_active"] = False
         
@@ -465,6 +470,7 @@ def limpiar_juego():
         estado_juego["ruleta"]["status"] = "idle"
         
         estado_juego["probable"]["winners_ids"] = []
+        estado_juego["probable"]["status"] = "idle"
         estado_juego["memorice"]["status"] = "idle"
         estado_juego["memorice"]["timer_active"] = False
         guardar_datos()
@@ -503,6 +509,8 @@ def memorice_config():
         m["active_player_index"] = 0
         m["status"] = "idle"
         m["timer_active"] = False
+        
+        estado_juego["active_screen"] = "game_memorice"
         
         guardar_datos()
         notificar_cambio()
@@ -652,6 +660,8 @@ def music_config():
             estado_juego["music"]["audio_url"] = audio_url.strip()
             
         estado_juego["music"]["revealed_level"] = 0
+        estado_juego["music"]["status"] = "idle"
+        estado_juego["active_screen"] = "game_music"
         guardar_datos()
         notificar_cambio()
     return jsonify(estado_juego["music"])
@@ -662,6 +672,8 @@ def music_revelar():
         level = estado_juego["music"]["revealed_level"]
         if level < 5:
             estado_juego["music"]["revealed_level"] += 1
+            if estado_juego["music"]["revealed_level"] > 0:
+                estado_juego["music"]["status"] = "playing"
             guardar_datos()
             notificar_cambio()
     return jsonify(estado_juego["music"])
@@ -680,6 +692,10 @@ def set_music_level():
         
     with data_lock:
         estado_juego["music"]["revealed_level"] = level
+        if level > 0:
+            estado_juego["music"]["status"] = "playing"
+        else:
+            estado_juego["music"]["status"] = "idle"
         guardar_datos()
         notificar_cambio()
     return jsonify(estado_juego["music"])
@@ -971,6 +987,22 @@ def ruleta_premiar():
     return jsonify({"success": True, "jugador": encontrado, "puntos_asignados": puntos})
 
 
+@app.route("/api/juego/ruleta/reset", methods=["POST"])
+def ruleta_reset():
+    """Restablece la ruleta al estado de espera (lobby)."""
+    with data_lock:
+        ru = estado_juego["ruleta"]
+        ru["selected_player_id"] = None
+        ru["question"] = "¡Gira la ruleta para comenzar!"
+        ru["level"] = "verde"
+        ru["points"] = 10
+        ru["status"] = "idle"
+        guardar_datos()
+        notificar_cambio()
+    return jsonify(estado_juego["ruleta"])
+
+
+
 # --- JUEGO: ¿QUIÉN ES MÁS PROBABLE QUE...? ---
 
 @app.route("/api/juego/probable/preset", methods=["GET"])
@@ -992,11 +1024,24 @@ def probable_config():
         pr = estado_juego["probable"]
         pr["question"] = question
         pr["winners_ids"] = []
+        pr["status"] = "idle"
+        estado_juego["active_screen"] = "game_probable"
         
         guardar_datos()
         notificar_cambio()
         
     return jsonify(estado_juego["probable"])
+
+
+@app.route("/api/juego/probable/iniciar", methods=["POST"])
+def probable_iniciar():
+    """Inicia el juego de probabilidad (revela la pregunta en el proyector)."""
+    with data_lock:
+        estado_juego["probable"]["status"] = "playing"
+        guardar_datos()
+        notificar_cambio()
+    return jsonify(estado_juego["probable"])
+
 
 @app.route("/api/juego/probable/votar", methods=["POST"])
 def probable_votar():
